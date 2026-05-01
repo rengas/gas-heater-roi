@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FAQ — Water Heater Conversion</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    details > summary { list-style: none; cursor: pointer; }
+    details > summary::-webkit-details-marker { display: none; }
+    details[open] .chev { transform: rotate(90deg); }
+    .chev { transition: transform 150ms; display: inline-block; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+  <div class="max-w-5xl mx-auto px-4 py-8 sm:py-12">
+
+    <!-- NAV -->
+    <nav class="mb-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm border-b border-slate-200 pb-4">
+      <span class="font-semibold text-slate-900">Water Heater Tools</span>
+      <a href="index.html" class="text-slate-600 hover:text-indigo-600">Calculator</a>
+      <a href="learn.html" class="text-slate-600 hover:text-indigo-600">How Heaters Work</a>
+      <a href="faq.html" class="text-indigo-600 font-medium">FAQ</a>
+    </nav>
+
+    <header class="mb-8">
+      <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">Frequently Asked Questions</h1>
+      <p class="text-sm sm:text-base text-slate-600 mt-1">
+        Practical questions about hot water usage, heater types, and the calculator's assumptions.
+      </p>
+    </header>
+
+    <section class="space-y-3">
+
+      <details class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 group" open>
+        <summary class="flex items-start justify-between gap-3">
+          <h2 class="text-base sm:text-lg font-semibold text-slate-900">How much water do people on average use for showering in Singapore?</h2>
+          <span class="chev text-slate-400 mt-1">&rsaquo;</span>
+        </summary>
+
+        <div class="mt-4 space-y-4 text-sm text-slate-700 leading-relaxed">
+          <p>
+            It depends on showerhead flow rate and how long each shower lasts. PUB requires new
+            showerheads to flow no more than <strong>9 L/min</strong>; "Very Good" rated fittings flow
+            <strong>≤ 7 L/min</strong>. Most modern HDB / condo bathrooms land in this range.
+          </p>
+
+          <h3 class="font-semibold text-slate-900 mt-2">Per shower (mixed water at the showerhead)</h3>
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+              <thead>
+                <tr class="text-left text-slate-500 border-b border-slate-200">
+                  <th class="py-2 pr-4 font-medium">Showerhead</th>
+                  <th class="py-2 pr-4 font-medium">Flow</th>
+                  <th class="py-2 pr-4 font-medium">8-min shower</th>
+                  <th class="py-2 pr-0 font-medium">12-min shower</th>
+                </tr>
+              </thead>
+              <tbody class="[&amp;>tr]:border-b [&amp;>tr]:border-slate-100 [&amp;>tr>td]:py-2 [&amp;>tr>td]:pr-4">
+                <tr><td>Low-flow / water-efficient</td><td>6–7 L/min</td><td>~50 L</td><td>~80 L</td></tr>
+                <tr><td>Standard</td><td>9–10 L/min</td><td>~75 L</td><td>~115 L</td></tr>
+                <tr><td>Rainshower / older fittings</td><td>12–18 L/min</td><td>~110 L</td><td>~180 L</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 class="font-semibold text-slate-900 mt-2">Per person per day (mixed shower water)</h3>
+          <ul class="list-disc list-inside space-y-1">
+            <li><strong>Light user</strong> (1 short shower): ~50 L</li>
+            <li><strong>Average SG household</strong>: ~70–90 L</li>
+            <li><strong>Heavy user</strong> (long or multiple showers): 120–180 L</li>
+          </ul>
+
+          <div class="bg-indigo-50 ring-1 ring-indigo-200 rounded-lg p-4 text-sm text-indigo-900">
+            <strong>For the calculator's <em>Hot Water per Person (L/day)</em> field:</strong>
+            <p class="mt-2">
+              Use the <strong>mixed water at the tap</strong> &mdash; the actual water you shower with.
+              That number, multiplied by the <em>delivery temperature</em> minus the cold inlet, gives
+              the energy needed regardless of whether your heater is instant-regulated or a storage
+              tank with a tap mixer. Default <strong>80 L/person/day</strong> covers a ~10-minute
+              shower at 8 L/min plus a bit of basin / washing-up usage.
+            </p>
+          </div>
+        </div>
+      </details>
+
+      <details class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 group">
+        <summary class="flex items-start justify-between gap-3">
+          <h2 class="text-base sm:text-lg font-semibold text-slate-900">My heater has a regulator I set to 38&deg;C &mdash; doesn't it only heat to that point?</h2>
+          <span class="chev text-slate-400 mt-1">&rsaquo;</span>
+        </summary>
+
+        <div class="mt-4 space-y-4 text-sm text-slate-700 leading-relaxed">
+          <p>
+            Yes &mdash; if your heater is an <strong>instant heater with an output regulator</strong>
+            (most modern Rinnai gas instant, Joven, and many electric instant units), it modulates the
+            burner / heating element to deliver water at exactly the dial temperature. Set 38&deg;C, get
+            38&deg;C at the tap. <strong>No mixing happens at the tap mixer for hot water</strong> &mdash;
+            you just open the hot side.
+          </p>
+          <p>
+            That's a <strong>completely different control philosophy</strong> from a storage tank:
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-50 ring-1 ring-slate-200 rounded-lg p-4">
+              <h3 class="font-semibold text-slate-900 mb-2">Storage tank (gas or electric)</h3>
+              <ul class="list-disc list-inside space-y-1">
+                <li>Tank held at <strong>~60&deg;C</strong> always (kills Legionella).</li>
+                <li>Dial on the unit sets the <em>tank</em> temperature.</li>
+                <li>You mix hot + cold at the <strong>shower mixer</strong> to get ~40&deg;C.</li>
+                <li>&Delta;T to heat = 60 &minus; 28 = <strong>32&deg;C</strong>; you draw less hot water (mixing dilutes it).</li>
+              </ul>
+            </div>
+            <div class="bg-indigo-50 ring-1 ring-indigo-200 rounded-lg p-4 text-indigo-900">
+              <h3 class="font-semibold text-indigo-900 mb-2">Instant heater with output regulator</h3>
+              <ul class="list-disc list-inside space-y-1">
+                <li>No tank. Heater modulates output in real time.</li>
+                <li>Dial sets the <em>delivery</em> temperature.</li>
+                <li>You open the hot tap directly &mdash; no mixing needed.</li>
+                <li>&Delta;T to heat = delivery &minus; cold (e.g. 38 &minus; 28 = <strong>10&deg;C</strong>); you draw the full tap volume.</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3 class="font-semibold text-slate-900 mt-2">Why the energy is similar (but not identical)</h3>
+          <p>
+            Heating any mass of water by a temperature rise takes the same energy
+            (<code>m &times; c &times; &Delta;T</code>). For an 80 L shower at 40&deg;C from 28&deg;C cold:
+          </p>
+          <ul class="list-disc list-inside space-y-1">
+            <li><strong>Instant @ 40&deg;C</strong>: 80 L &times; 12&deg;C = <code>960 L&middot;&deg;C</code></li>
+            <li><strong>Tank @ 60&deg;C</strong> (mix 30 L hot + 50 L cold): 30 L &times; 32&deg;C = <code>960 L&middot;&deg;C</code> &mdash; same.</li>
+          </ul>
+          <p>
+            But the tank also pays <strong>standby loss</strong> (~25&ndash;30 kWh/month for a 50 L tank
+            in SG ambient) regardless of whether you shower. That's the real efficiency penalty of a tank
+            vs. an instant heater.
+          </p>
+
+          <div class="bg-emerald-50 ring-1 ring-emerald-200 rounded-lg p-4 text-sm text-emerald-900">
+            <strong>How the calculator handles this:</strong>
+            <p class="mt-2">
+              The <em>Hot Water Delivery Temp</em> field is the temperature you actually use &mdash;
+              your dial setting (instant) or your shower mixing temp (tank). Heating energy is computed
+              from <code>(delivery &minus; cold inlet)</code>, which works for both. Tank standby loss
+              is added separately, assuming the tank is held at 60&deg;C internally. Set
+              <em>tank capacity = 0</em> for an instant heater.
+            </p>
+          </div>
+        </div>
+      </details>
+
+    </section>
+
+    <footer class="text-xs text-slate-500 leading-relaxed mt-10">
+      <p>
+        Sources: <a class="text-indigo-600 hover:underline" href="https://www.pub.gov.sg/savewater/atHome" target="_blank" rel="noopener">PUB water-saving guidance</a>,
+        manufacturer flow specs, and household water-usage surveys. Numbers are typical-case estimates;
+        your actual usage will vary.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

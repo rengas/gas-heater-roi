@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>How Water Heaters Work — Electric vs. Gas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+  <div class="max-w-5xl mx-auto px-4 py-8 sm:py-12">
+
+    <nav class="mb-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm border-b border-slate-200 pb-4">
+      <span class="font-semibold text-slate-900">Water Heater Tools</span>
+      <a href="index.html" class="text-slate-600 hover:text-indigo-600">Calculator</a>
+      <a href="learn.html" class="text-indigo-600 font-medium">How Heaters Work</a>
+      <a href="faq.html" class="text-slate-600 hover:text-indigo-600">FAQ</a>
+    </nav>
+
+    <header class="mb-10">
+      <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">How Water Heaters Work</h1>
+      <p class="text-sm sm:text-base text-slate-600 mt-1">
+        A practical comparison of electric and gas water heating &mdash; what's happening inside, and what it costs you.
+      </p>
+    </header>
+
+    <!-- TL;DR -->
+    <section class="bg-amber-50 ring-1 ring-amber-200 rounded-2xl p-5 sm:p-6 mb-8">
+      <h2 class="text-base font-semibold text-amber-900 mb-2">TL;DR</h2>
+      <ul class="list-disc list-inside text-sm text-amber-900 space-y-1">
+        <li><strong>Electric heaters</strong> turn electricity directly into heat through a metal coil &mdash; very efficient (~97%), simple, slow to recover.</li>
+        <li><strong>Gas heaters</strong> burn piped gas under a heat exchanger &mdash; less efficient (~82%), but gas is cheaper per kWh and they recover faster.</li>
+        <li>The <em>raw</em> tariff gap is ~20%, but after efficiency losses the real running-cost gap is closer to <strong>~5%</strong>.</li>
+        <li>The bigger savings when switching to electric often come from <strong>dropping the monthly gas standing charge</strong>, not the per-kWh price.</li>
+      </ul>
+    </section>
+
+    <!-- ELECTRIC -->
+    <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-7 mb-6">
+      <div class="flex items-baseline gap-3 mb-4">
+        <span class="inline-block w-3 h-3 rounded-full bg-indigo-500"></span>
+        <h2 class="text-xl font-bold text-slate-900">Electric Water Heater</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+        <!-- diagram -->
+        <div>
+          <svg viewBox="0 0 240 260" class="w-full max-w-xs mx-auto" aria-label="Electric storage tank diagram">
+            <!-- pipes -->
+            <line x1="60" y1="10" x2="60" y2="40" stroke="#dc2626" stroke-width="3"/>
+            <text x="65" y="20" font-size="10" fill="#7f1d1d">Hot out</text>
+            <line x1="180" y1="220" x2="180" y2="250" stroke="#2563eb" stroke-width="3"/>
+            <text x="120" y="245" font-size="10" fill="#1e3a8a">Cold in</text>
+            <!-- tank -->
+            <rect x="40" y="40" width="160" height="180" rx="20" fill="#e0e7ff" stroke="#6366f1" stroke-width="2"/>
+            <!-- water lines -->
+            <path d="M 50 80 Q 70 75 90 80 T 130 80 T 170 80 T 190 80" stroke="#93c5fd" fill="none" stroke-width="1.5"/>
+            <path d="M 50 110 Q 70 105 90 110 T 130 110 T 170 110 T 190 110" stroke="#93c5fd" fill="none" stroke-width="1.5"/>
+            <path d="M 50 140 Q 70 135 90 140 T 130 140 T 170 140 T 190 140" stroke="#93c5fd" fill="none" stroke-width="1.5"/>
+            <!-- heating element coil -->
+            <path d="M 70 180 q 10 -10 20 0 t 20 0 t 20 0 t 20 0 t 20 0" stroke="#dc2626" stroke-width="3" fill="none"/>
+            <text x="100" y="205" font-size="9" fill="#7f1d1d">heating element</text>
+            <!-- thermostat -->
+            <circle cx="55" cy="60" r="5" fill="#fbbf24" stroke="#92400e" stroke-width="1"/>
+            <text x="65" y="63" font-size="8" fill="#92400e">thermostat</text>
+            <!-- power -->
+            <path d="M 20 190 L 40 190" stroke="#facc15" stroke-width="2" stroke-dasharray="3,2"/>
+            <text x="0" y="185" font-size="9" fill="#854d0e">~ AC</text>
+          </svg>
+        </div>
+
+        <!-- text -->
+        <div>
+          <h3 class="font-semibold text-slate-900 mb-2">How it works</h3>
+          <ol class="list-decimal list-inside text-sm text-slate-700 space-y-1 mb-4">
+            <li>Cold water enters the bottom of an insulated tank.</li>
+            <li>An <strong>immersed heating element</strong> (a Nichrome resistance coil) is energised by mains AC.</li>
+            <li>Electrical resistance in the coil dissipates as heat &mdash; almost all of it transfers to the surrounding water.</li>
+            <li>A <strong>thermostat</strong> cycles the element on/off to hold the setpoint (typically 55&ndash;65&deg;C).</li>
+            <li>Hot water rises and is drawn from the top when a tap opens.</li>
+          </ol>
+
+          <h3 class="font-semibold text-slate-900 mb-2">Key numbers</h3>
+          <ul class="text-sm text-slate-700 space-y-1">
+            <li><strong>Efficiency:</strong> ~95&ndash;98% (resistance heating is nearly lossless)</li>
+            <li><strong>Element power:</strong> 1.5&ndash;3&nbsp;kW (storage), 8&ndash;30&nbsp;kW (instant)</li>
+            <li><strong>Recovery time (50L tank, &Delta;T 32&deg;C):</strong> ~50&ndash;60 min on a 2&nbsp;kW element</li>
+            <li><strong>Lifespan:</strong> 8&ndash;12 years</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- GAS -->
+    <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-7 mb-6">
+      <div class="flex items-baseline gap-3 mb-4">
+        <span class="inline-block w-3 h-3 rounded-full bg-orange-500"></span>
+        <h2 class="text-xl font-bold text-slate-900">Gas Water Heater</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+        <!-- diagram -->
+        <div>
+          <svg viewBox="0 0 260 260" class="w-full max-w-xs mx-auto" aria-label="Gas storage tank diagram">
+            <!-- flue -->
+            <line x1="130" y1="10" x2="130" y2="40" stroke="#9ca3af" stroke-width="6"/>
+            <text x="140" y="20" font-size="10" fill="#374151">flue (exhaust)</text>
+            <text x="100" y="35" font-size="14" fill="#9ca3af">↑</text>
+            <!-- hot out -->
+            <line x1="60" y1="40" x2="60" y2="10" stroke="#dc2626" stroke-width="3"/>
+            <text x="10" y="20" font-size="10" fill="#7f1d1d">Hot out</text>
+            <!-- cold in -->
+            <line x1="220" y1="220" x2="220" y2="250" stroke="#2563eb" stroke-width="3"/>
+            <text x="160" y="245" font-size="10" fill="#1e3a8a">Cold in</text>
+            <!-- tank -->
+            <rect x="40" y="40" width="180" height="160" rx="20" fill="#fed7aa" stroke="#ea580c" stroke-width="2"/>
+            <!-- internal flue tube -->
+            <rect x="120" y="40" width="20" height="160" fill="#9ca3af" opacity="0.4"/>
+            <!-- water -->
+            <path d="M 50 80 Q 75 75 100 80 T 150 80 T 200 80 T 215 80" stroke="#93c5fd" fill="none" stroke-width="1.5"/>
+            <path d="M 50 120 Q 75 115 100 120 T 150 120 T 200 120 T 215 120" stroke="#93c5fd" fill="none" stroke-width="1.5"/>
+            <path d="M 50 160 Q 75 155 100 160 T 150 160 T 200 160 T 215 160" stroke="#93c5fd" fill="none" stroke-width="1.5"/>
+            <!-- burner -->
+            <rect x="90" y="210" width="80" height="14" rx="2" fill="#374151"/>
+            <text x="180" y="220" font-size="9" fill="#374151">burner</text>
+            <!-- flames -->
+            <path d="M 100 210 q 5 -10 10 0 q 5 -10 10 0 q 5 -10 10 0 q 5 -10 10 0 q 5 -10 10 0 q 5 -10 10 0 q 5 -10 10 0" fill="#f97316" stroke="#dc2626" stroke-width="0.5"/>
+            <!-- gas in -->
+            <line x1="20" y1="217" x2="90" y2="217" stroke="#fbbf24" stroke-width="2"/>
+            <text x="0" y="240" font-size="9" fill="#854d0e">Piped gas</text>
+          </svg>
+        </div>
+
+        <!-- text -->
+        <div>
+          <h3 class="font-semibold text-slate-900 mb-2">How it works</h3>
+          <ol class="list-decimal list-inside text-sm text-slate-700 space-y-1 mb-4">
+            <li>Cold water enters the bottom of an insulated tank (or flows through coils, in tankless units).</li>
+            <li>A <strong>gas burner</strong> below or beside a heat exchanger ignites piped gas (town gas, natural gas, or LPG).</li>
+            <li>Hot combustion gases transfer heat to the water <em>through a metal wall</em> &mdash; the water and the flame never touch.</li>
+            <li>Spent combustion gases (CO<sub>2</sub>, water vapour, residual heat) leave through a <strong>flue</strong>.</li>
+            <li>A thermostat or flow sensor controls the gas valve to maintain temperature.</li>
+          </ol>
+
+          <h3 class="font-semibold text-slate-900 mb-2">Key numbers</h3>
+          <ul class="text-sm text-slate-700 space-y-1">
+            <li><strong>Efficiency:</strong> ~80&ndash;85% (15&ndash;20% lost up the flue as hot exhaust)</li>
+            <li><strong>Burner output:</strong> 20&ndash;40&nbsp;kW typical &mdash; far higher than electric elements</li>
+            <li><strong>Recovery time:</strong> 2&ndash;5&times; faster than equivalent electric storage</li>
+            <li><strong>Lifespan:</strong> 10&ndash;15 years (heat exchanger is the wear part)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPARISON TABLE -->
+    <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-7 mb-6">
+      <h2 class="text-xl font-bold text-slate-900 mb-4">Side-by-Side Comparison</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm">
+          <thead>
+            <tr class="text-left text-slate-500 border-b border-slate-200">
+              <th class="py-2 pr-4 font-medium">Dimension</th>
+              <th class="py-2 pr-4 font-medium text-indigo-700">Electric</th>
+              <th class="py-2 pr-0 font-medium text-orange-700">Gas</th>
+            </tr>
+          </thead>
+          <tbody class="[&amp;>tr]:border-b [&amp;>tr]:border-slate-100 [&amp;>tr>td]:py-2 [&amp;>tr>td]:pr-4 [&amp;>tr>td]:align-top">
+            <tr><td class="font-medium text-slate-700">Energy source</td><td>Mains electricity</td><td>Piped town/natural gas, or LPG</td></tr>
+            <tr><td class="font-medium text-slate-700">Conversion process</td><td>Joule heating in resistance coil</td><td>Combustion through heat exchanger</td></tr>
+            <tr><td class="font-medium text-slate-700">Efficiency</td><td><strong>~95&ndash;98%</strong></td><td>~80&ndash;85%</td></tr>
+            <tr><td class="font-medium text-slate-700">Tariff (SGD/kWh)</td><td>~$0.2972</td><td><strong>~$0.2389</strong></td></tr>
+            <tr><td class="font-medium text-slate-700">Effective cost / useful kWh</td><td>~$0.306</td><td><strong>~$0.291</strong> (~5% cheaper)</td></tr>
+            <tr><td class="font-medium text-slate-700">Standing charge</td><td>None (just metered usage)</td><td>~$15&ndash;20 / month even at zero usage</td></tr>
+            <tr><td class="font-medium text-slate-700">Heating speed</td><td>Slow (storage), or huge instant load</td><td><strong>Fast</strong> &mdash; high burner output</td></tr>
+            <tr><td class="font-medium text-slate-700">Hot water on demand</td><td>Tank size limits; instant draws 8&ndash;30 kW</td><td>Tankless models give endless hot water easily</td></tr>
+            <tr><td class="font-medium text-slate-700">Upfront cost</td><td><strong>Lower</strong> (~$300&ndash;800 unit)</td><td>Higher (~$700&ndash;1,500 unit + flue)</td></tr>
+            <tr><td class="font-medium text-slate-700">Installation</td><td>Just a power point + plumbing</td><td>Gas line, regulator, ventilation, flue</td></tr>
+            <tr><td class="font-medium text-slate-700">Safety</td><td>Electrical shock risk, but no combustion</td><td>Combustion risk: CO, gas leak, flue blockage</td></tr>
+            <tr><td class="font-medium text-slate-700">Maintenance</td><td>Element + anode rod every few years</td><td>Annual burner / flue check recommended</td></tr>
+            <tr><td class="font-medium text-slate-700">Lifespan</td><td>8&ndash;12 years</td><td>10&ndash;15 years</td></tr>
+            <tr><td class="font-medium text-slate-700">Carbon footprint</td><td>Tracks the grid mix &mdash; falls as grid greens; pairs with solar PV</td><td>Direct fossil-fuel combustion; fixed CO<sub>2</sub> per kWh</td></tr>
+            <tr><td class="font-medium text-slate-700">Footprint &amp; siting</td><td>Compact; can sit anywhere with a power point</td><td>Needs ventilation; outdoor or well-vented siting</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- THE REAL ECONOMICS -->
+    <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-7 mb-6">
+      <h2 class="text-xl font-bold text-slate-900 mb-3">The Real Economics</h2>
+      <p class="text-sm text-slate-700 mb-4">
+        The headline "gas is 19.6% cheaper than electricity" comes from the raw tariff ratio
+        ($0.2389 / $0.2972). But that compares the cost of a kWh you <em>buy</em>, not the cost
+        of a kWh that ends up <em>in your water</em>. Once you account for efficiency losses, the
+        gap shrinks dramatically.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div class="bg-indigo-50 ring-1 ring-indigo-200 rounded-lg p-4">
+          <p class="text-xs uppercase tracking-wide text-indigo-700 font-semibold">Electric (97% efficient)</p>
+          <p class="text-sm text-slate-700 mt-2">$0.2972 &divide; 0.97 = <strong>$0.306 / useful kWh</strong></p>
+        </div>
+        <div class="bg-orange-50 ring-1 ring-orange-200 rounded-lg p-4">
+          <p class="text-xs uppercase tracking-wide text-orange-700 font-semibold">Gas (82% efficient)</p>
+          <p class="text-sm text-slate-700 mt-2">$0.2389 &divide; 0.82 = <strong>$0.291 / useful kWh</strong></p>
+        </div>
+      </div>
+
+      <p class="text-sm text-slate-700 mb-3">
+        <strong>Real running-cost gap: ~5%</strong>, not 20%. On 200 kWh/month of useful hot water that's about
+        <strong>$3 / month</strong> &mdash; before even considering the gas standing charge.
+      </p>
+
+      <div class="bg-emerald-50 ring-1 ring-emerald-200 rounded-lg p-4 text-sm text-emerald-900">
+        <strong>The hidden saver:</strong> if you only have piped gas for the water heater, switching off the gas
+        account saves the monthly standing charge (~$15&ndash;20). Over a year that's $180&ndash;240 &mdash;
+        usually larger than the per-kWh savings either way.
+      </div>
+    </section>
+
+    <!-- WHEN TO PICK WHICH -->
+    <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-7 mb-6">
+      <h2 class="text-xl font-bold text-slate-900 mb-4">When to Pick Which</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="bg-indigo-50 ring-1 ring-indigo-200 rounded-lg p-4">
+          <h3 class="font-semibold text-indigo-900 mb-2">Lean Electric if&hellip;</h3>
+          <ul class="list-disc list-inside text-sm text-indigo-900 space-y-1">
+            <li>You're paying a gas standing charge for water heating only.</li>
+            <li>You have (or plan to add) solar PV.</li>
+            <li>You want a simpler install &mdash; no flue, no gas line.</li>
+            <li>Hot water demand is moderate and predictable.</li>
+            <li>You value safety: no combustion, no CO risk.</li>
+          </ul>
+        </div>
+        <div class="bg-orange-50 ring-1 ring-orange-200 rounded-lg p-4">
+          <h3 class="font-semibold text-orange-900 mb-2">Lean Gas if&hellip;</h3>
+          <ul class="list-disc list-inside text-sm text-orange-900 space-y-1">
+            <li>You already have piped gas for the cooktop &mdash; standing charge is sunk cost.</li>
+            <li>Household demand is heavy and bursty (large family, back-to-back showers).</li>
+            <li>You need fast recovery / endless hot water.</li>
+            <li>You're in an older property with existing gas infrastructure.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <footer class="text-xs text-slate-500 leading-relaxed mt-8">
+      <p>
+        Numbers above are typical-case estimates for the Singapore residential market.
+        Actual figures vary with appliance model, usage pattern, climate, and tariff revisions.
+        Cross-check current tariffs with
+        <a class="text-indigo-600 hover:underline" href="https://www.spgroup.com.sg/our-services/utilities/tariff-information" target="_blank" rel="noopener">SP Group</a>,
+        <a class="text-indigo-600 hover:underline" href="https://cityenergy.com.sg/newsroom/" target="_blank" rel="noopener">City Energy</a>,
+        and <a class="text-indigo-600 hover:underline" href="https://www.ema.gov.sg/resources/statistics" target="_blank" rel="noopener">EMA</a>.
+      </p>
+      <p class="mt-3"><a href="index.html" class="text-indigo-600 hover:underline">&larr; Back to ROI Calculator</a></p>
+    </footer>
+
+  </div>
+</body>
+</html>
