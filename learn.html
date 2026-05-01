@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>How Water Heaters Work — Electric vs. Gas</title>
+  <title>How Water Heaters Work — Instant Electric, Electric Tank, Gas</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen">
@@ -12,6 +12,7 @@
     <nav class="mb-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm border-b border-slate-200 pb-4">
       <span class="font-semibold text-slate-900">Water Heater Tools</span>
       <a href="index.html" class="text-slate-600 hover:text-indigo-600">Calculator</a>
+      <a href="tariffs.html" class="text-slate-600 hover:text-indigo-600">Tariffs</a>
       <a href="methodology.html" class="text-slate-600 hover:text-indigo-600">Methodology</a>
       <a href="learn.html" class="text-indigo-600 font-medium">How Heaters Work</a>
       <a href="faq.html" class="text-slate-600 hover:text-indigo-600">FAQ</a>
@@ -20,7 +21,7 @@
     <header class="mb-10">
       <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">How Water Heaters Work</h1>
       <p class="text-sm sm:text-base text-slate-600 mt-1">
-        A practical comparison of electric and gas water heating &mdash; what's happening inside, and what it costs you.
+        The three water heater types you'll see in Singapore homes &mdash; what's happening inside, what each costs to run, and when each makes sense.
       </p>
     </header>
 
@@ -28,64 +29,123 @@
     <section class="bg-amber-50 ring-1 ring-amber-200 rounded-2xl p-5 sm:p-6 mb-8">
       <h2 class="text-base font-semibold text-amber-900 mb-2">TL;DR</h2>
       <ul class="list-disc list-inside text-sm text-amber-900 space-y-1">
-        <li><strong>Electric heaters</strong> turn electricity directly into heat through a metal coil &mdash; very efficient (~97%), simple, slow to recover.</li>
-        <li><strong>Gas heaters</strong> burn piped gas under a heat exchanger &mdash; less efficient (~82%), but gas is cheaper per kWh and they recover faster.</li>
-        <li>The <em>raw</em> tariff gap is ~20%, but after efficiency losses the real running-cost gap is closer to <strong>~5%</strong>.</li>
-        <li>The bigger savings when switching to electric often come from <strong>dropping the monthly gas standing charge</strong>, not the per-kWh price.</li>
+        <li><strong>Instant electric</strong> &mdash; compact wall unit, very efficient (~97%), no standby loss, but draws huge current (8&ndash;30 kW) and may need a dedicated circuit.</li>
+        <li><strong>Electric storage tank</strong> &mdash; insulated tank with immersed element. Lower-power (1.5&ndash;3 kW), but pays standby loss 24/7 to keep the tank hot.</li>
+        <li><strong>Gas (almost always instant in SG)</strong> &mdash; burner + heat exchanger, recovers fast, ~82% efficient (rest goes up the flue), gas is cheaper per kWh.</li>
+        <li>Raw tariff gap is ~20% gas vs electric, but after efficiency adjustment the real running-cost gap is closer to <strong>~5%</strong>.</li>
+        <li>The hidden saver going electric: <strong>dropping the monthly gas standing charge</strong>, often $15&ndash;20 / month.</li>
       </ul>
     </section>
 
-    <!-- ELECTRIC -->
+    <!-- INSTANT ELECTRIC -->
     <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-7 mb-6">
       <div class="flex items-baseline gap-3 mb-4">
-        <span class="inline-block w-3 h-3 rounded-full bg-indigo-500"></span>
-        <h2 class="text-xl font-bold text-slate-900">Electric Water Heater</h2>
+        <span class="inline-block w-3 h-3 rounded-full bg-emerald-500"></span>
+        <h2 class="text-xl font-bold text-slate-900">Instant Electric Heater</h2>
+        <span class="text-xs text-slate-500">tankless &middot; on-demand</span>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-        <!-- diagram -->
         <div>
-          <svg viewBox="0 0 240 260" class="w-full max-w-xs mx-auto" aria-label="Electric storage tank diagram">
-            <!-- pipes -->
-            <line x1="60" y1="10" x2="60" y2="40" stroke="#dc2626" stroke-width="3"/>
-            <text x="65" y="20" font-size="10" fill="#7f1d1d">Hot out</text>
-            <line x1="180" y1="220" x2="180" y2="250" stroke="#2563eb" stroke-width="3"/>
-            <text x="120" y="245" font-size="10" fill="#1e3a8a">Cold in</text>
-            <!-- tank -->
-            <rect x="40" y="40" width="160" height="180" rx="20" fill="#e0e7ff" stroke="#6366f1" stroke-width="2"/>
-            <!-- water lines -->
-            <path d="M 50 80 Q 70 75 90 80 T 130 80 T 170 80 T 190 80" stroke="#93c5fd" fill="none" stroke-width="1.5"/>
-            <path d="M 50 110 Q 70 105 90 110 T 130 110 T 170 110 T 190 110" stroke="#93c5fd" fill="none" stroke-width="1.5"/>
-            <path d="M 50 140 Q 70 135 90 140 T 130 140 T 170 140 T 190 140" stroke="#93c5fd" fill="none" stroke-width="1.5"/>
-            <!-- heating element coil -->
-            <path d="M 70 180 q 10 -10 20 0 t 20 0 t 20 0 t 20 0 t 20 0" stroke="#dc2626" stroke-width="3" fill="none"/>
-            <text x="100" y="205" font-size="9" fill="#7f1d1d">heating element</text>
-            <!-- thermostat -->
-            <circle cx="55" cy="60" r="5" fill="#fbbf24" stroke="#92400e" stroke-width="1"/>
-            <text x="65" y="63" font-size="8" fill="#92400e">thermostat</text>
+          <svg viewBox="0 0 240 260" class="w-full max-w-xs mx-auto" aria-label="Instant electric heater diagram">
+            <!-- hot out -->
+            <line x1="120" y1="10" x2="120" y2="40" stroke="#dc2626" stroke-width="3"/>
+            <text x="125" y="20" font-size="10" fill="#7f1d1d">Hot out</text>
+            <!-- compact unit -->
+            <rect x="50" y="40" width="140" height="160" rx="12" fill="#d1fae5" stroke="#10b981" stroke-width="2"/>
+            <!-- flow chamber -->
+            <rect x="78" y="70" width="84" height="110" rx="6" fill="#fff" stroke="#94a3b8" stroke-width="1.5"/>
+            <!-- heating element coils inside chamber -->
+            <path d="M 88 92 q 6 -8 12 0 t 12 0 t 12 0 t 12 0 t 12 0" stroke="#dc2626" stroke-width="2.5" fill="none"/>
+            <path d="M 88 112 q 6 -8 12 0 t 12 0 t 12 0 t 12 0 t 12 0" stroke="#dc2626" stroke-width="2.5" fill="none"/>
+            <path d="M 88 132 q 6 -8 12 0 t 12 0 t 12 0 t 12 0 t 12 0" stroke="#dc2626" stroke-width="2.5" fill="none"/>
+            <path d="M 88 152 q 6 -8 12 0 t 12 0 t 12 0 t 12 0 t 12 0" stroke="#dc2626" stroke-width="2.5" fill="none"/>
+            <text x="120" y="195" font-size="9" fill="#7f1d1d" text-anchor="middle">heating coils (in flow)</text>
+            <!-- regulator dial -->
+            <circle cx="65" cy="60" r="6" fill="#fbbf24" stroke="#92400e" stroke-width="1"/>
+            <text x="75" y="63" font-size="8" fill="#92400e">regulator</text>
             <!-- power -->
-            <path d="M 20 190 L 40 190" stroke="#facc15" stroke-width="2" stroke-dasharray="3,2"/>
-            <text x="0" y="185" font-size="9" fill="#854d0e">~ AC</text>
+            <path d="M 30 120 L 50 120" stroke="#facc15" stroke-width="2" stroke-dasharray="3,2"/>
+            <text x="0" y="115" font-size="9" fill="#854d0e">~ AC (high amp)</text>
+            <!-- cold in -->
+            <line x1="120" y1="200" x2="120" y2="230" stroke="#2563eb" stroke-width="3"/>
+            <text x="80" y="225" font-size="10" fill="#1e3a8a">Cold in</text>
           </svg>
         </div>
 
-        <!-- text -->
         <div>
           <h3 class="font-semibold text-slate-900 mb-2">How it works</h3>
           <ol class="list-decimal list-inside text-sm text-slate-700 space-y-1 mb-4">
-            <li>Cold water enters the bottom of an insulated tank.</li>
-            <li>An <strong>immersed heating element</strong> (a Nichrome resistance coil) is energised by mains AC.</li>
-            <li>Electrical resistance in the coil dissipates as heat &mdash; almost all of it transfers to the surrounding water.</li>
-            <li>A <strong>thermostat</strong> cycles the element on/off to hold the setpoint (typically 55&ndash;65&deg;C).</li>
-            <li>Hot water rises and is drawn from the top when a tap opens.</li>
+            <li>You open the hot tap &mdash; a flow sensor wakes the unit.</li>
+            <li>Cold water passes through a small <strong>heating chamber</strong> with a high-power resistance coil.</li>
+            <li>The coil dumps current as heat <em>directly into the flowing water</em>.</li>
+            <li>An electronic regulator modulates power to deliver water at exactly the dial setpoint.</li>
+            <li>Tap closes &rarr; flow stops &rarr; unit goes to standby (~0 W).</li>
           </ol>
 
           <h3 class="font-semibold text-slate-900 mb-2">Key numbers</h3>
           <ul class="text-sm text-slate-700 space-y-1">
-            <li><strong>Efficiency:</strong> ~95&ndash;98% (resistance heating is nearly lossless)</li>
-            <li><strong>Element power:</strong> 1.5&ndash;3&nbsp;kW (storage), 8&ndash;30&nbsp;kW (instant)</li>
-            <li><strong>Recovery time (50L tank, &Delta;T 32&deg;C):</strong> ~50&ndash;60 min on a 2&nbsp;kW element</li>
+            <li><strong>Efficiency:</strong> ~95&ndash;98% (resistance heating, no flue)</li>
+            <li><strong>Element power:</strong> 8&ndash;30 kW &mdash; needs a dedicated high-amp circuit</li>
+            <li><strong>Standby loss:</strong> essentially zero &mdash; no tank to keep hot</li>
+            <li><strong>Recovery time:</strong> instant (water heats as it flows)</li>
             <li><strong>Lifespan:</strong> 8&ndash;12 years</li>
+            <li><strong>Footprint:</strong> small, mounts in the bathroom near the showerhead</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ELECTRIC STORAGE TANK -->
+    <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-7 mb-6">
+      <div class="flex items-baseline gap-3 mb-4">
+        <span class="inline-block w-3 h-3 rounded-full bg-indigo-500"></span>
+        <h2 class="text-xl font-bold text-slate-900">Electric Storage Tank</h2>
+        <span class="text-xs text-slate-500">tank-based &middot; pre-heated</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+        <div>
+          <svg viewBox="0 0 240 260" class="w-full max-w-xs mx-auto" aria-label="Electric storage tank diagram">
+            <line x1="60" y1="10" x2="60" y2="40" stroke="#dc2626" stroke-width="3"/>
+            <text x="65" y="20" font-size="10" fill="#7f1d1d">Hot out</text>
+            <line x1="180" y1="220" x2="180" y2="250" stroke="#2563eb" stroke-width="3"/>
+            <text x="120" y="245" font-size="10" fill="#1e3a8a">Cold in</text>
+            <rect x="40" y="40" width="160" height="180" rx="20" fill="#e0e7ff" stroke="#6366f1" stroke-width="2"/>
+            <path d="M 50 80 Q 70 75 90 80 T 130 80 T 170 80 T 190 80" stroke="#93c5fd" fill="none" stroke-width="1.5"/>
+            <path d="M 50 110 Q 70 105 90 110 T 130 110 T 170 110 T 190 110" stroke="#93c5fd" fill="none" stroke-width="1.5"/>
+            <path d="M 50 140 Q 70 135 90 140 T 130 140 T 170 140 T 190 140" stroke="#93c5fd" fill="none" stroke-width="1.5"/>
+            <path d="M 70 180 q 10 -10 20 0 t 20 0 t 20 0 t 20 0 t 20 0" stroke="#dc2626" stroke-width="3" fill="none"/>
+            <text x="120" y="205" font-size="9" fill="#7f1d1d" text-anchor="middle">immersed element</text>
+            <circle cx="55" cy="60" r="5" fill="#fbbf24" stroke="#92400e" stroke-width="1"/>
+            <text x="65" y="63" font-size="8" fill="#92400e">thermostat</text>
+            <path d="M 20 190 L 40 190" stroke="#facc15" stroke-width="2" stroke-dasharray="3,2"/>
+            <text x="0" y="185" font-size="9" fill="#854d0e">~ AC</text>
+            <!-- standby loss arrows -->
+            <text x="220" y="100" font-size="14" fill="#94a3b8">↓</text>
+            <text x="220" y="140" font-size="14" fill="#94a3b8">↓</text>
+            <text x="208" y="180" font-size="9" fill="#64748b">heat loss</text>
+          </svg>
+        </div>
+
+        <div>
+          <h3 class="font-semibold text-slate-900 mb-2">How it works</h3>
+          <ol class="list-decimal list-inside text-sm text-slate-700 space-y-1 mb-4">
+            <li>An <strong>insulated tank</strong> (typically 30&ndash;80 L) holds water pre-heated to a setpoint.</li>
+            <li>An <strong>immersed Nichrome element</strong> heats the tank water; a thermostat cycles it on/off to hold ~60&deg;C.</li>
+            <li>You mix hot tank water with cold at the <strong>shower mixer</strong> to get ~40&deg;C.</li>
+            <li>As you draw hot water, cold inflow pushes it up; the element reheats whatever the thermostat detects.</li>
+            <li>Even when nobody's home, the tank keeps cycling to fight heat loss to ambient &mdash; that's the <strong>standby loss</strong>.</li>
+          </ol>
+
+          <h3 class="font-semibold text-slate-900 mb-2">Key numbers</h3>
+          <ul class="text-sm text-slate-700 space-y-1">
+            <li><strong>Efficiency:</strong> ~95&ndash;98% during heating</li>
+            <li><strong>Element power:</strong> 1.5&ndash;3 kW &mdash; runs on a normal circuit</li>
+            <li><strong>Standby loss:</strong> ~25&ndash;30 kWh/month for a 50 L tank held at 60&deg;C in 28&deg;C ambient</li>
+            <li><strong>Recovery time:</strong> ~50&ndash;60 min for a 50 L tank from cold (2 kW element)</li>
+            <li><strong>Lifespan:</strong> 8&ndash;12 years (element + anode rod replaceable)</li>
+            <li><strong>Footprint:</strong> larger; usually mounted above the shower or in a service yard</li>
           </ul>
         </div>
       </div>
@@ -96,58 +156,58 @@
       <div class="flex items-baseline gap-3 mb-4">
         <span class="inline-block w-3 h-3 rounded-full bg-orange-500"></span>
         <h2 class="text-xl font-bold text-slate-900">Gas Water Heater</h2>
+        <span class="text-xs text-slate-500">typically instant in SG (Rinnai, Joven)</span>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-        <!-- diagram -->
         <div>
-          <svg viewBox="0 0 260 260" class="w-full max-w-xs mx-auto" aria-label="Gas storage tank diagram">
+          <svg viewBox="0 0 240 280" class="w-full max-w-xs mx-auto" aria-label="Gas instant heater diagram">
             <!-- flue -->
-            <line x1="130" y1="10" x2="130" y2="40" stroke="#9ca3af" stroke-width="6"/>
-            <text x="140" y="20" font-size="10" fill="#374151">flue (exhaust)</text>
-            <text x="100" y="35" font-size="14" fill="#9ca3af">↑</text>
+            <line x1="120" y1="10" x2="120" y2="40" stroke="#9ca3af" stroke-width="6"/>
+            <text x="130" y="20" font-size="10" fill="#374151">flue</text>
+            <text x="105" y="35" font-size="14" fill="#9ca3af">↑</text>
             <!-- hot out -->
             <line x1="60" y1="40" x2="60" y2="10" stroke="#dc2626" stroke-width="3"/>
             <text x="10" y="20" font-size="10" fill="#7f1d1d">Hot out</text>
-            <!-- cold in -->
-            <line x1="220" y1="220" x2="220" y2="250" stroke="#2563eb" stroke-width="3"/>
-            <text x="160" y="245" font-size="10" fill="#1e3a8a">Cold in</text>
-            <!-- tank -->
-            <rect x="40" y="40" width="180" height="160" rx="20" fill="#fed7aa" stroke="#ea580c" stroke-width="2"/>
-            <!-- internal flue tube -->
-            <rect x="120" y="40" width="20" height="160" fill="#9ca3af" opacity="0.4"/>
-            <!-- water -->
-            <path d="M 50 80 Q 75 75 100 80 T 150 80 T 200 80 T 215 80" stroke="#93c5fd" fill="none" stroke-width="1.5"/>
-            <path d="M 50 120 Q 75 115 100 120 T 150 120 T 200 120 T 215 120" stroke="#93c5fd" fill="none" stroke-width="1.5"/>
-            <path d="M 50 160 Q 75 155 100 160 T 150 160 T 200 160 T 215 160" stroke="#93c5fd" fill="none" stroke-width="1.5"/>
+            <!-- unit body -->
+            <rect x="40" y="40" width="180" height="200" rx="12" fill="#fed7aa" stroke="#ea580c" stroke-width="2"/>
+            <!-- heat exchanger coils -->
+            <path d="M 70 80 q 10 -8 20 0 q 10 8 20 0 q 10 -8 20 0 q 10 8 20 0 q 10 -8 20 0 q 10 8 20 0" stroke="#3b82f6" stroke-width="3" fill="none"/>
+            <path d="M 70 100 q 10 -8 20 0 q 10 8 20 0 q 10 -8 20 0 q 10 8 20 0 q 10 -8 20 0 q 10 8 20 0" stroke="#3b82f6" stroke-width="3" fill="none"/>
+            <path d="M 70 120 q 10 -8 20 0 q 10 8 20 0 q 10 -8 20 0 q 10 8 20 0 q 10 -8 20 0 q 10 8 20 0" stroke="#3b82f6" stroke-width="3" fill="none"/>
+            <text x="125" y="150" font-size="9" fill="#1e3a8a" text-anchor="middle">water coils (heat exchanger)</text>
             <!-- burner -->
-            <rect x="90" y="210" width="80" height="14" rx="2" fill="#374151"/>
-            <text x="180" y="220" font-size="9" fill="#374151">burner</text>
+            <rect x="70" y="200" width="120" height="14" rx="2" fill="#374151"/>
             <!-- flames -->
-            <path d="M 100 210 q 5 -10 10 0 q 5 -10 10 0 q 5 -10 10 0 q 5 -10 10 0 q 5 -10 10 0 q 5 -10 10 0 q 5 -10 10 0" fill="#f97316" stroke="#dc2626" stroke-width="0.5"/>
+            <path d="M 80 200 q 5 -12 10 0 q 5 -12 10 0 q 5 -12 10 0 q 5 -12 10 0 q 5 -12 10 0 q 5 -12 10 0 q 5 -12 10 0 q 5 -12 10 0 q 5 -12 10 0 q 5 -12 10 0 q 5 -12 10 0" fill="#f97316" stroke="#dc2626" stroke-width="0.5"/>
+            <text x="195" y="210" font-size="9" fill="#374151">burner</text>
             <!-- gas in -->
-            <line x1="20" y1="217" x2="90" y2="217" stroke="#fbbf24" stroke-width="2"/>
-            <text x="0" y="240" font-size="9" fill="#854d0e">Piped gas</text>
+            <line x1="20" y1="207" x2="70" y2="207" stroke="#fbbf24" stroke-width="2"/>
+            <text x="0" y="225" font-size="9" fill="#854d0e">Gas in</text>
+            <!-- cold in -->
+            <line x1="180" y1="240" x2="180" y2="270" stroke="#2563eb" stroke-width="3"/>
+            <text x="125" y="265" font-size="10" fill="#1e3a8a">Cold in</text>
           </svg>
         </div>
 
-        <!-- text -->
         <div>
           <h3 class="font-semibold text-slate-900 mb-2">How it works</h3>
           <ol class="list-decimal list-inside text-sm text-slate-700 space-y-1 mb-4">
-            <li>Cold water enters the bottom of an insulated tank (or flows through coils, in tankless units).</li>
-            <li>A <strong>gas burner</strong> below or beside a heat exchanger ignites piped gas (town gas, natural gas, or LPG).</li>
-            <li>Hot combustion gases transfer heat to the water <em>through a metal wall</em> &mdash; the water and the flame never touch.</li>
-            <li>Spent combustion gases (CO<sub>2</sub>, water vapour, residual heat) leave through a <strong>flue</strong>.</li>
-            <li>A thermostat or flow sensor controls the gas valve to maintain temperature.</li>
+            <li>Tap opens &rarr; flow sensor opens the gas valve and triggers electronic ignition.</li>
+            <li>Cold water flows through a metal <strong>heat exchanger</strong> sitting above a gas burner.</li>
+            <li>Combustion gases transfer heat to the water through the metal wall &mdash; flame and water never touch.</li>
+            <li>A modulating valve adjusts gas flow so output temperature matches the dial setpoint.</li>
+            <li>Spent combustion gases (CO<sub>2</sub>, water vapour, residual heat) leave through the <strong>flue</strong> &mdash; that's the ~15&ndash;20% efficiency loss.</li>
           </ol>
 
           <h3 class="font-semibold text-slate-900 mb-2">Key numbers</h3>
           <ul class="text-sm text-slate-700 space-y-1">
-            <li><strong>Efficiency:</strong> ~80&ndash;85% (15&ndash;20% lost up the flue as hot exhaust)</li>
-            <li><strong>Burner output:</strong> 20&ndash;40&nbsp;kW typical &mdash; far higher than electric elements</li>
-            <li><strong>Recovery time:</strong> 2&ndash;5&times; faster than equivalent electric storage</li>
+            <li><strong>Efficiency:</strong> ~80&ndash;85% (rest lost up the flue as hot exhaust)</li>
+            <li><strong>Burner output:</strong> 20&ndash;40 kW typical &mdash; far higher than electric storage</li>
+            <li><strong>Standby loss:</strong> zero (instant) / ~similar to electric tank if storage</li>
+            <li><strong>Recovery time:</strong> instant &mdash; water heats as it flows</li>
             <li><strong>Lifespan:</strong> 10&ndash;15 years (heat exchanger is the wear part)</li>
+            <li><strong>Install requirements:</strong> gas line + flue / ventilation; usually outdoor or service-yard mount</li>
           </ul>
         </div>
       </div>
@@ -161,26 +221,29 @@
           <thead>
             <tr class="text-left text-slate-500 border-b border-slate-200">
               <th class="py-2 pr-4 font-medium">Dimension</th>
-              <th class="py-2 pr-4 font-medium text-indigo-700">Electric</th>
-              <th class="py-2 pr-0 font-medium text-orange-700">Gas</th>
+              <th class="py-2 pr-4 font-medium text-emerald-700">Instant Electric</th>
+              <th class="py-2 pr-4 font-medium text-indigo-700">Electric Tank</th>
+              <th class="py-2 pr-0 font-medium text-orange-700">Gas (Instant)</th>
             </tr>
           </thead>
           <tbody class="[&amp;>tr]:border-b [&amp;>tr]:border-slate-100 [&amp;>tr>td]:py-2 [&amp;>tr>td]:pr-4 [&amp;>tr>td]:align-top">
-            <tr><td class="font-medium text-slate-700">Energy source</td><td>Mains electricity</td><td>Piped town/natural gas, or LPG</td></tr>
-            <tr><td class="font-medium text-slate-700">Conversion process</td><td>Joule heating in resistance coil</td><td>Combustion through heat exchanger</td></tr>
-            <tr><td class="font-medium text-slate-700">Efficiency</td><td><strong>~95&ndash;98%</strong></td><td>~80&ndash;85%</td></tr>
-            <tr><td class="font-medium text-slate-700">Tariff (SGD/kWh)</td><td>~$0.2972</td><td><strong>~$0.2389</strong></td></tr>
-            <tr><td class="font-medium text-slate-700">Effective cost / useful kWh</td><td>~$0.306</td><td><strong>~$0.291</strong> (~5% cheaper)</td></tr>
-            <tr><td class="font-medium text-slate-700">Standing charge</td><td>None (just metered usage)</td><td>~$15&ndash;20 / month even at zero usage</td></tr>
-            <tr><td class="font-medium text-slate-700">Heating speed</td><td>Slow (storage), or huge instant load</td><td><strong>Fast</strong> &mdash; high burner output</td></tr>
-            <tr><td class="font-medium text-slate-700">Hot water on demand</td><td>Tank size limits; instant draws 8&ndash;30 kW</td><td>Tankless models give endless hot water easily</td></tr>
-            <tr><td class="font-medium text-slate-700">Upfront cost</td><td><strong>Lower</strong> (~$300&ndash;800 unit)</td><td>Higher (~$700&ndash;1,500 unit + flue)</td></tr>
-            <tr><td class="font-medium text-slate-700">Installation</td><td>Just a power point + plumbing</td><td>Gas line, regulator, ventilation, flue</td></tr>
-            <tr><td class="font-medium text-slate-700">Safety</td><td>Electrical shock risk, but no combustion</td><td>Combustion risk: CO, gas leak, flue blockage</td></tr>
-            <tr><td class="font-medium text-slate-700">Maintenance</td><td>Element + anode rod every few years</td><td>Annual burner / flue check recommended</td></tr>
-            <tr><td class="font-medium text-slate-700">Lifespan</td><td>8&ndash;12 years</td><td>10&ndash;15 years</td></tr>
-            <tr><td class="font-medium text-slate-700">Carbon footprint</td><td>Tracks the grid mix &mdash; falls as grid greens; pairs with solar PV</td><td>Direct fossil-fuel combustion; fixed CO<sub>2</sub> per kWh</td></tr>
-            <tr><td class="font-medium text-slate-700">Footprint &amp; siting</td><td>Compact; can sit anywhere with a power point</td><td>Needs ventilation; outdoor or well-vented siting</td></tr>
+            <tr><td class="font-medium text-slate-700">Energy source</td><td>Mains electricity</td><td>Mains electricity</td><td>Piped town/natural gas, or LPG</td></tr>
+            <tr><td class="font-medium text-slate-700">Conversion process</td><td>Joule heating in flow chamber</td><td>Joule heating in tank element</td><td>Combustion through heat exchanger</td></tr>
+            <tr><td class="font-medium text-slate-700">Efficiency (heating)</td><td><strong>~97%</strong></td><td><strong>~97%</strong></td><td>~82%</td></tr>
+            <tr><td class="font-medium text-slate-700">Standby loss</td><td><strong>~0</strong></td><td>~25&ndash;30 kWh/mo (50 L)</td><td><strong>~0</strong> (instant)</td></tr>
+            <tr><td class="font-medium text-slate-700">Tariff (SGD/kWh)</td><td>~$0.2972</td><td>~$0.2972</td><td><strong>~$0.2389</strong></td></tr>
+            <tr><td class="font-medium text-slate-700">Effective cost / useful kWh</td><td><strong>~$0.306</strong></td><td>~$0.306 + standby</td><td><strong>~$0.291</strong></td></tr>
+            <tr><td class="font-medium text-slate-700">Standing charge</td><td>None</td><td>None</td><td>~$15&ndash;20 / month</td></tr>
+            <tr><td class="font-medium text-slate-700">Power draw (peak)</td><td>8&ndash;30 kW (huge)</td><td>1.5&ndash;3 kW</td><td>~50 W electronics + gas</td></tr>
+            <tr><td class="font-medium text-slate-700">Heating speed</td><td>Instant on demand</td><td>Slow recovery (~1 hr)</td><td><strong>Fast</strong> &mdash; high burner output</td></tr>
+            <tr><td class="font-medium text-slate-700">Hot water on tap</td><td>Endless, but limited by element power</td><td>Tank size limits per shower</td><td>Endless, comfortable flow</td></tr>
+            <tr><td class="font-medium text-slate-700">Upfront cost</td><td>~$200&ndash;500</td><td>~$300&ndash;800</td><td>~$700&ndash;1,500 + flue</td></tr>
+            <tr><td class="font-medium text-slate-700">Installation</td><td><strong>Dedicated high-amp circuit</strong></td><td>Normal power point</td><td>Gas line + flue + ventilation</td></tr>
+            <tr><td class="font-medium text-slate-700">Safety</td><td>Electric shock risk; needs ELCB</td><td>Same as instant</td><td>Combustion: CO, gas leak, flue blockage</td></tr>
+            <tr><td class="font-medium text-slate-700">Maintenance</td><td>Minimal &mdash; descale every few years</td><td>Element + anode rod every few years</td><td>Annual burner / flue check</td></tr>
+            <tr><td class="font-medium text-slate-700">Lifespan</td><td>8&ndash;12 years</td><td>8&ndash;12 years</td><td>10&ndash;15 years</td></tr>
+            <tr><td class="font-medium text-slate-700">Carbon footprint</td><td>Tracks grid mix; greens over time</td><td>Same; plus standby penalty</td><td>Direct fossil-fuel combustion</td></tr>
+            <tr><td class="font-medium text-slate-700">Footprint &amp; siting</td><td>Smallest &mdash; in-bathroom</td><td>Largest &mdash; needs mount space</td><td>Outdoor / well-vented</td></tr>
           </tbody>
         </table>
       </div>
@@ -192,54 +255,73 @@
       <p class="text-sm text-slate-700 mb-4">
         The headline "gas is 19.6% cheaper than electricity" comes from the raw tariff ratio
         ($0.2389 / $0.2972). But that compares the cost of a kWh you <em>buy</em>, not the cost
-        of a kWh that ends up <em>in your water</em>. Once you account for efficiency losses, the
-        gap shrinks dramatically.
+        of a kWh that ends up <em>in your water</em>. After efficiency adjustment:
       </p>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-        <div class="bg-indigo-50 ring-1 ring-indigo-200 rounded-lg p-4">
-          <p class="text-xs uppercase tracking-wide text-indigo-700 font-semibold">Electric (97% efficient)</p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <div class="bg-emerald-50 ring-1 ring-emerald-200 rounded-lg p-4">
+          <p class="text-xs uppercase tracking-wide text-emerald-700 font-semibold">Instant electric (97%)</p>
           <p class="text-sm text-slate-700 mt-2">$0.2972 &divide; 0.97 = <strong>$0.306 / useful kWh</strong></p>
+          <p class="text-xs text-slate-500 mt-1">No standby. Costs only what you draw.</p>
+        </div>
+        <div class="bg-indigo-50 ring-1 ring-indigo-200 rounded-lg p-4">
+          <p class="text-xs uppercase tracking-wide text-indigo-700 font-semibold">Electric tank (97% + standby)</p>
+          <p class="text-sm text-slate-700 mt-2">$0.306 / kWh of draw, <strong>plus</strong> ~$8/mo standby (50 L)</p>
+          <p class="text-xs text-slate-500 mt-1">Standby penalty hits regardless of usage.</p>
         </div>
         <div class="bg-orange-50 ring-1 ring-orange-200 rounded-lg p-4">
-          <p class="text-xs uppercase tracking-wide text-orange-700 font-semibold">Gas (82% efficient)</p>
+          <p class="text-xs uppercase tracking-wide text-orange-700 font-semibold">Gas instant (82%)</p>
           <p class="text-sm text-slate-700 mt-2">$0.2389 &divide; 0.82 = <strong>$0.291 / useful kWh</strong></p>
+          <p class="text-xs text-slate-500 mt-1">Plus a $15&ndash;20 / month standing charge.</p>
         </div>
       </div>
 
       <p class="text-sm text-slate-700 mb-3">
-        <strong>Real running-cost gap: ~5%</strong>, not 20%. On 200 kWh/month of useful hot water that's about
-        <strong>$3 / month</strong> &mdash; before even considering the gas standing charge.
+        <strong>Real running-cost gap (instant electric vs gas instant): ~5%</strong>, not 20%.
+        On 130 kWh/month of useful hot water that's about <strong>$2 / month</strong>. The gas
+        standing charge ($15&ndash;20/mo) is usually larger than the per-kWh savings.
       </p>
 
       <div class="bg-emerald-50 ring-1 ring-emerald-200 rounded-lg p-4 text-sm text-emerald-900">
-        <strong>The hidden saver:</strong> if you only have piped gas for the water heater, switching off the gas
-        account saves the monthly standing charge (~$15&ndash;20). Over a year that's $180&ndash;240 &mdash;
-        usually larger than the per-kWh savings either way.
+        <strong>Where storage tanks lose money:</strong> a 50 L electric tank held at 60&deg;C in 28&deg;C
+        ambient bleeds ~28 kWh/month as standby loss &mdash; about <strong>$8/month</strong>. That's
+        nearly 100 kWh/year of pure waste, regardless of how many showers you actually take. Going
+        from electric tank to instant (gas or electric) usually erases that.
       </div>
     </section>
 
     <!-- WHEN TO PICK WHICH -->
     <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-7 mb-6">
       <h2 class="text-xl font-bold text-slate-900 mb-4">When to Pick Which</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-emerald-50 ring-1 ring-emerald-200 rounded-lg p-4">
+          <h3 class="font-semibold text-emerald-900 mb-2">Lean instant electric if&hellip;</h3>
+          <ul class="list-disc list-inside text-sm text-emerald-900 space-y-1">
+            <li>The bathroom has (or can take) a high-amp dedicated circuit.</li>
+            <li>Hot water demand is light to moderate &mdash; 1&ndash;2 showers at a time.</li>
+            <li>You want zero standby loss &amp; the smallest possible unit.</li>
+            <li>You want the simplest install &mdash; no flue, no gas, no tank to mount.</li>
+            <li>You're planning solar PV down the line.</li>
+          </ul>
+        </div>
         <div class="bg-indigo-50 ring-1 ring-indigo-200 rounded-lg p-4">
-          <h3 class="font-semibold text-indigo-900 mb-2">Lean Electric if&hellip;</h3>
+          <h3 class="font-semibold text-indigo-900 mb-2">Lean electric tank if&hellip;</h3>
           <ul class="list-disc list-inside text-sm text-indigo-900 space-y-1">
-            <li>You're paying a gas standing charge for water heating only.</li>
-            <li>You have (or plan to add) solar PV.</li>
-            <li>You want a simpler install &mdash; no flue, no gas line.</li>
-            <li>Hot water demand is moderate and predictable.</li>
-            <li>You value safety: no combustion, no CO risk.</li>
+            <li>Your wiring can't support a high-amp instant circuit.</li>
+            <li>You want bursty hot water on a normal 1.5&ndash;3 kW supply.</li>
+            <li>You shower at predictable times &mdash; the tank has time to recover.</li>
+            <li>You're replacing like-for-like and don't want to redo plumbing.</li>
+            <li>(Accept the standby loss as a cost of convenience.)</li>
           </ul>
         </div>
         <div class="bg-orange-50 ring-1 ring-orange-200 rounded-lg p-4">
-          <h3 class="font-semibold text-orange-900 mb-2">Lean Gas if&hellip;</h3>
+          <h3 class="font-semibold text-orange-900 mb-2">Lean gas if&hellip;</h3>
           <ul class="list-disc list-inside text-sm text-orange-900 space-y-1">
             <li>You already have piped gas for the cooktop &mdash; standing charge is sunk cost.</li>
-            <li>Household demand is heavy and bursty (large family, back-to-back showers).</li>
-            <li>You need fast recovery / endless hot water.</li>
-            <li>You're in an older property with existing gas infrastructure.</li>
+            <li>Heavy / bursty demand: large family, back-to-back showers.</li>
+            <li>You want endless hot water at full flow.</li>
+            <li>You're in an older property with existing flue / ventilation.</li>
+            <li>Bathroom can't take a high-amp electrical install.</li>
           </ul>
         </div>
       </div>

@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Historical Tariffs — Electricity &amp; Town Gas (Singapore)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+  <style>
+    .chart-shell { position: relative; height: 360px; }
+    @media (max-width: 640px) { .chart-shell { height: 280px; } }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+  <div class="max-w-5xl mx-auto px-4 py-8 sm:py-12">
+
+    <nav class="mb-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm border-b border-slate-200 pb-4">
+      <span class="font-semibold text-slate-900">Water Heater Tools</span>
+      <a href="index.html" class="text-slate-600 hover:text-indigo-600">Calculator</a>
+      <a href="tariffs.html" class="text-indigo-600 font-medium">Tariffs</a>
+      <a href="methodology.html" class="text-slate-600 hover:text-indigo-600">Methodology</a>
+      <a href="learn.html" class="text-slate-600 hover:text-indigo-600">How Heaters Work</a>
+      <a href="faq.html" class="text-slate-600 hover:text-indigo-600">FAQ</a>
+    </nav>
+
+    <header class="mb-8">
+      <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">Historical Tariff Trends</h1>
+      <p class="text-sm sm:text-base text-slate-600 mt-1">
+        Singapore residential electricity (SP Group) and piped town gas (City Energy) rates,
+        sourced from the official quarterly tariff archives. Both shown in <strong>cents / kWh, GST inclusive</strong>.
+      </p>
+    </header>
+
+    <!-- KEY STATS -->
+    <section id="statsCard" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+      <!-- filled by JS -->
+    </section>
+
+    <!-- COMBINED CHART -->
+    <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-6">
+      <h2 class="text-lg font-semibold text-slate-900 mb-1">Combined Trend</h2>
+      <p class="text-xs text-slate-500 mb-4">Both tariffs on the same axes &mdash; the gap between them is what your calculator's running-cost savings hinge on.</p>
+      <div class="chart-shell"><canvas id="combinedChart"></canvas></div>
+    </section>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6">
+        <h2 class="text-lg font-semibold text-indigo-700 mb-1">Electricity (SP Group)</h2>
+        <p class="text-xs text-slate-500 mb-4">Domestic, low-tension supply, 2014&ndash;present.</p>
+        <div class="chart-shell"><canvas id="elecChart"></canvas></div>
+      </section>
+
+      <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6">
+        <h2 class="text-lg font-semibold text-orange-700 mb-1">Town Gas (City Energy)</h2>
+        <p class="text-xs text-slate-500 mb-4">General tariff, 2007&ndash;present.</p>
+        <div class="chart-shell"><canvas id="gasChart"></canvas></div>
+      </section>
+    </div>
+
+    <!-- COMMENTARY -->
+    <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-6 text-sm text-slate-700 leading-relaxed">
+      <h2 class="text-lg font-semibold text-slate-900 mb-3">What the trends tell you</h2>
+      <ul class="list-disc list-inside space-y-1.5">
+        <li><strong>Both tariffs are pegged to fuel-import prices</strong> &mdash; gas tracks LNG, electricity tracks the natural gas SP buys to generate. They tend to move together.</li>
+        <li><strong>2015&ndash;2016 dip:</strong> oil &amp; LNG collapsed; electricity hit ~19&cent;/kWh (lowest in the series) and gas hit ~16&cent;/kWh.</li>
+        <li><strong>2022&ndash;2024 surge:</strong> Russia / Ukraine + LNG supply squeeze pushed electricity to a peak of 32.58&cent;/kWh in 2024 Q1.</li>
+        <li><strong>The gap (electric − gas) is fairly stable</strong>: typically 7&ndash;9&cent;/kWh in recent years. That gap is what drives the ROI calculator's running-cost savings.</li>
+        <li><strong>Long-run growth:</strong> from 2014 to 2026, electricity averaged ~<span id="elecCagr">…</span>%/yr; gas averaged ~<span id="gasCagr">…</span>%/yr (CAGR). The calculator's 3% default is a reasonable mid-range assumption.</li>
+      </ul>
+    </section>
+
+    <footer class="text-xs text-slate-500 leading-relaxed">
+      <p>Data sources:
+        <a class="text-indigo-600 hover:underline" href="https://www.spgroup.com.sg/our-services/utilities/tariff-information" target="_blank" rel="noopener">SP Group Tariff Information</a> ·
+        <a class="text-indigo-600 hover:underline" href="https://cityenergy.com.sg/newsroom/" target="_blank" rel="noopener">City Energy Newsroom</a> ·
+        <a class="text-indigo-600 hover:underline" href="https://www.ema.gov.sg/resources/statistics" target="_blank" rel="noopener">EMA Statistics</a>.
+        Both series are GST-inclusive (9% from Jan 2024). Town gas figures are the general tariff (residential).
+      </p>
+    </footer>
+
+  </div>
+
+  <script>
+    // Embedded data extracted from the source Excel sheets.
+    const ELEC = [
+      {"d": "2014-01-01", "r": 27.4455},
+      {"d": "2014-04-01", "r": 27.531100000000002},
+      {"d": "2014-07-01", "r": 27.477600000000002},
+      {"d": "2014-10-01", "r": 27.0496},
+      {"d": "2015-01-01", "r": 24.9203},
+      {"d": "2015-04-01", "r": 22.330900000000003},
+      {"d": "2015-07-01", "r": 23.9787},
+      {"d": "2015-10-01", "r": 21.774500000000003},
+      {"d": "2016-01-01", "r": 20.865000000000002},
+      {"d": "2016-04-01", "r": 18.9176},
+      {"d": "2016-07-01", "r": 20.6189},
+      {"d": "2016-10-01", "r": 20.4691},
+      {"d": "2017-01-01", "r": 21.614},
+      {"d": "2017-04-01", "r": 22.887300000000003},
+      {"d": "2017-07-01", "r": 22.1704},
+      {"d": "2017-10-01", "r": 21.721000000000004},
+      {"d": "2018-01-01", "r": 23.0692},
+      {"d": "2018-04-01", "r": 23.700499999999998},
+      {"d": "2018-07-01", "r": 25.3055},
+      {"d": "2018-10-01", "r": 25.8191},
+      {"d": "2019-01-01", "r": 25.52},
+      {"d": "2019-04-01", "r": 24.3853},
+      {"d": "2019-07-01", "r": 25.92},
+      {"d": "2019-10-01", "r": 25.07},
+      {"d": "2020-01-01", "r": 25.94},
+      {"d": "2020-04-01", "r": 24.63},
+      {"d": "2020-07-01", "r": 20.97},
+      {"d": "2020-10-01", "r": 22.93},
+      {"d": "2021-01-01", "r": 22.21},
+      {"d": "2021-04-01", "r": 24.13},
+      {"d": "2021-07-01", "r": 25.02},
+      {"d": "2021-10-01", "r": 25.8},
+      {"d": "2022-01-01", "r": 27.22},
+      {"d": "2022-04-01", "r": 29.9},
+      {"d": "2022-07-01", "r": 32.28},
+      {"d": "2022-10-01", "r": 31.82},
+      {"d": "2023-01-01", "r": 31.27},
+      {"d": "2023-04-01", "r": 29.62},
+      {"d": "2023-07-01", "r": 29.96},
+      {"d": "2023-10-01", "r": 31.0},
+      {"d": "2024-01-01", "r": 32.58},
+      {"d": "2024-04-01", "r": 32.47},
+      {"d": "2024-07-01", "r": 32.57},
+      {"d": "2024-10-01", "r": 31.72},
+      {"d": "2025-01-01", "r": 30.65},
+      {"d": "2025-04-01", "r": 30.65},
+      {"d": "2025-07-01", "r": 29.94},
+      {"d": "2025-10-01", "r": 30.03},
+      {"d": "2026-01-01", "r": 29.11},
+      {"d": "2026-04-01", "r": 29.72}
+    ];
+    const GAS  = [
+      {"d": "2007-01-01", "r": 16.76},
+      {"d": "2007-08-01", "r": 17.55},
+      {"d": "2007-11-01", "r": 17.97},
+      {"d": "2008-02-01", "r": 19.34},
+      {"d": "2008-08-15", "r": 21.21},
+      {"d": "2009-02-01", "r": 15.14},
+      {"d": "2009-08-01", "r": 16.28},
+      {"d": "2009-11-01", "r": 18.52},
+      {"d": "2010-02-01", "r": 18.92},
+      {"d": "2010-11-01", "r": 17.99},
+      {"d": "2011-08-01", "r": 19.61},
+      {"d": "2011-11-01", "r": 21.17},
+      {"d": "2012-02-01", "r": 21.45},
+      {"d": "2012-05-01", "r": 22.16},
+      {"d": "2012-08-01", "r": 21.54},
+      {"d": "2012-11-01", "r": 21.36},
+      {"d": "2013-02-01", "r": 21.04},
+      {"d": "2013-05-01", "r": 21.26},
+      {"d": "2013-08-01", "r": 20.89},
+      {"d": "2013-11-01", "r": 21.18},
+      {"d": "2014-02-01", "r": 21.01},
+      {"d": "2014-05-01", "r": 21.08},
+      {"d": "2014-08-01", "r": 21.06},
+      {"d": "2014-11-01", "r": 20.83},
+      {"d": "2015-11-01", "r": 17.47},
+      {"d": "2016-02-01", "r": 16.8},
+      {"d": "2016-05-01", "r": 16.03},
+      {"d": "2016-08-01", "r": 16.6},
+      {"d": "2016-11-01", "r": 16.85},
+      {"d": "2017-02-01", "r": 17.61},
+      {"d": "2017-05-01", "r": 18.04},
+      {"d": "2017-08-01", "r": 17.68},
+      {"d": "2017-11-01", "r": 17.68},
+      {"d": "2018-02-01", "r": 18.42},
+      {"d": "2018-05-01", "r": 18.53},
+      {"d": "2018-08-01", "r": 19.23},
+      {"d": "2018-11-01", "r": 19.67},
+      {"d": "2019-01-01", "r": 19.51},
+      {"d": "2019-04-01", "r": 18.8},
+      {"d": "2019-07-01", "r": 19.1},
+      {"d": "2019-10-01", "r": 17.99},
+      {"d": "2020-01-01", "r": 17.23},
+      {"d": "2020-04-01", "r": 17.11},
+      {"d": "2020-07-01", "r": 16.36},
+      {"d": "2020-10-01", "r": 17.19},
+      {"d": "2021-01-01", "r": 17.23},
+      {"d": "2021-04-01", "r": 18.07},
+      {"d": "2021-07-01", "r": 18.47},
+      {"d": "2021-10-01", "r": 19.04},
+      {"d": "2022-01-01", "r": 20.21},
+      {"d": "2022-04-01", "r": 21.66},
+      {"d": "2022-07-01", "r": 23.09},
+      {"d": "2022-10-01", "r": 22.73},
+      {"d": "2023-01-01", "r": 21.84},
+      {"d": "2023-04-01", "r": 21.68},
+      {"d": "2023-07-01", "r": 21.91},
+      {"d": "2023-10-01", "r": 22.42},
+      {"d": "2024-01-01", "r": 23.15},
+      {"d": "2024-04-01", "r": 23.12},
+      {"d": "2024-07-01", "r": 23.42},
+      {"d": "2024-10-01", "r": 22.97},
+      {"d": "2025-01-01", "r": 22.72},
+      {"d": "2025-04-01", "r": 22.72},
+      {"d": "2025-07-01", "r": 22.28},
+      {"d": "2025-10-01", "r": 22.35},
+      {"d": "2026-01-01", "r": 21.68},
+      {"d": "2026-04-01", "r": 21.92}
+    ];
+
+    // --- Stats ---
+    const fmtCent = v => v.toFixed(2) + '¢';
+    const last = arr => arr[arr.length - 1];
+    const min  = arr => arr.reduce((m, p) => p.r < m.r ? p : m);
+    const max  = arr => arr.reduce((m, p) => p.r > m.r ? p : m);
+
+    function statCard(label, value, sub, accent) {
+      return `<div class="bg-white rounded-xl ring-1 ring-slate-200 p-3">
+        <p class="text-xs text-slate-500">${label}</p>
+        <p class="text-lg font-semibold ${accent}">${value}</p>
+        <p class="text-xs text-slate-500 mt-0.5">${sub}</p>
+      </div>`;
+    }
+    const eLast = last(ELEC), gLast = last(GAS);
+    const eMax  = max(ELEC),  gMax  = max(GAS);
+    const eMin  = min(ELEC),  gMin  = min(GAS);
+    document.getElementById('statsCard').innerHTML = [
+      statCard('Latest electricity', fmtCent(eLast.r), eLast.d, 'text-indigo-700'),
+      statCard('Latest town gas',    fmtCent(gLast.r), gLast.d, 'text-orange-700'),
+      statCard('Electric peak / low', `${fmtCent(eMax.r)} / ${fmtCent(eMin.r)}`, `${eMax.d.slice(0,7)} · ${eMin.d.slice(0,7)}`, 'text-slate-700'),
+      statCard('Gas peak / low',      `${fmtCent(gMax.r)} / ${fmtCent(gMin.r)}`, `${gMax.d.slice(0,7)} · ${gMin.d.slice(0,7)}`, 'text-slate-700')
+    ].join('');
+
+    // --- CAGR helper ---
+    function cagr(arr, fromYear) {
+      const start = arr.find(p => p.d.startsWith(String(fromYear)));
+      if (!start) return null;
+      const end = last(arr);
+      const years = (new Date(end.d) - new Date(start.d)) / (365.25 * 86400000);
+      return (Math.pow(end.r / start.r, 1 / years) - 1) * 100;
+    }
+    document.getElementById('elecCagr').textContent = cagr(ELEC, 2014).toFixed(1);
+    document.getElementById('gasCagr').textContent  = cagr(GAS,  2014).toFixed(1);
+
+    // --- Chart config ---
+    const baseScales = {
+      x: {
+        type: 'time',
+        time: { unit: 'year', tooltipFormat: 'MMM yyyy' },
+        ticks: { color: '#64748b', font: { size: 11 } },
+        grid: { color: '#f1f5f9' }
+      },
+      y: {
+        title: { display: true, text: '¢ / kWh', color: '#64748b' },
+        ticks: { color: '#64748b', font: { size: 11 } },
+        grid: { color: '#f1f5f9' }
+      }
+    };
+    const baseOpts = {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'nearest', axis: 'x', intersect: false },
+      plugins: {
+        legend: { labels: { color: '#334155', font: { size: 12 } } },
+        tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)}¢/kWh` } }
+      },
+      elements: { point: { radius: 2.5, hoverRadius: 4 }, line: { tension: 0.2 } },
+      scales: baseScales
+    };
+
+    const ds = (data, label, color) => ({
+      label, data: data.map(p => ({ x: p.d, y: p.r })),
+      borderColor: color, backgroundColor: color + '22', borderWidth: 2, fill: false
+    });
+
+    new Chart(document.getElementById('combinedChart'), {
+      type: 'line',
+      data: { datasets: [
+        ds(ELEC, 'Electricity (SP Group)', '#4f46e5'),
+        ds(GAS,  'Town Gas (City Energy)', '#ea580c')
+      ]},
+      options: baseOpts
+    });
+
+    new Chart(document.getElementById('elecChart'), {
+      type: 'line',
+      data: { datasets: [ds(ELEC, 'Electricity', '#4f46e5')] },
+      options: { ...baseOpts, plugins: { ...baseOpts.plugins, legend: { display: false } } }
+    });
+
+    new Chart(document.getElementById('gasChart'), {
+      type: 'line',
+      data: { datasets: [ds(GAS, 'Town Gas', '#ea580c')] },
+      options: { ...baseOpts, plugins: { ...baseOpts.plugins, legend: { display: false } } }
+    });
+  </script>
+</body>
+</html>
