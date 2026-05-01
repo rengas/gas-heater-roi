@@ -83,10 +83,11 @@
             </tr>
           </thead>
           <tbody class="[&amp;>tr]:border-b [&amp;>tr]:border-slate-100 [&amp;>tr>td]:py-2 [&amp;>tr>td]:pr-4">
-            <tr><td>Electricity Tariff (SGD/kWh)</td><td><code class="var">P<sub>e</sub></code></td><td>0.2972</td></tr>
-            <tr><td>Gas Tariff (SGD/kWh)</td><td><code class="var">P<sub>g</sub></code></td><td>0.2389</td></tr>
+            <tr><td>Electricity Tariff, before GST (SGD/kWh)</td><td><code class="var">P<sub>e</sub></code></td><td>0.2727</td></tr>
+            <tr><td>Gas Tariff, before GST (SGD/kWh)</td><td><code class="var">P<sub>g</sub></code></td><td>0.2192</td></tr>
             <tr><td>Electricity Annual Increase</td><td><code class="var">r<sub>e</sub></code></td><td>0.03</td></tr>
             <tr><td>Gas Annual Increase</td><td><code class="var">r<sub>g</sub></code></td><td>0.03</td></tr>
+            <tr><td>GST (%)</td><td><code class="var">g</code></td><td>0.09 (9%)</td></tr>
             <tr><td>Household Size (people)</td><td><code class="var">N</code></td><td>4</td></tr>
             <tr><td>Hot Water per Person (L/day)</td><td><code class="var">L<sub>p</sub></code></td><td>80</td></tr>
             <tr><td>Cold Water Inlet Temp (&deg;C)</td><td><code class="var">T<sub>cold</sub></code></td><td>28</td></tr>
@@ -216,8 +217,8 @@ U<sub>gas</sub>  = (E<sub>heat</sub> + S<sub>gas</sub>)  × D       [kWh / month
         Each tariff compounds at its own annual rate. Costs accrue only during active usage months.
         Savings are the electric scenario's cost minus the gas scenario's cost.
       </p>
-      <pre class="formula">P<sub>e</sub>(N) = P<sub>e</sub> × (1 + r<sub>e</sub>)<sup>N−1</sup>
-P<sub>g</sub>(N) = P<sub>g</sub> × (1 + r<sub>g</sub>)<sup>N−1</sup>
+      <pre class="formula">P<sub>e</sub>(N) = P<sub>e</sub> × (1 + r<sub>e</sub>)<sup>N−1</sup> × (1 + g)
+P<sub>g</sub>(N) = P<sub>g</sub> × (1 + r<sub>g</sub>)<sup>N−1</sup> × (1 + g)
 
 Cost<sub>elec</sub>(N) = U<sub>elec</sub> × P<sub>e</sub>(N) × M<sub>a</sub>
 Cost<sub>gas</sub>(N)  = U<sub>gas</sub>  × P<sub>g</sub>(N) × M<sub>a</sub>

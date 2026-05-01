@@ -89,13 +89,13 @@
       <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Tariffs &amp; Trends</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 mb-6">
         <label class="block">
-          <span class="text-sm font-medium text-slate-700">Electricity Tariff (SGD / kWh)</span>
-          <input id="elecTariff" type="number" step="0.0001" min="0" value="0.2972"
+          <span class="text-sm font-medium text-slate-700">Electricity Tariff (SGD / kWh, <em class="not-italic text-slate-500">before GST</em>)</span>
+          <input id="elecTariff" type="number" step="0.0001" min="0" value="0.2727"
                  class="mt-1 block w-full rounded-lg border-slate-300 ring-1 ring-slate-200 focus:ring-2 focus:ring-indigo-500 focus:outline-none px-3 py-2" />
         </label>
         <label class="block">
-          <span class="text-sm font-medium text-slate-700">Gas Tariff (SGD / kWh)</span>
-          <input id="gasTariff" type="number" step="0.0001" min="0" value="0.2389"
+          <span class="text-sm font-medium text-slate-700">Gas Tariff (SGD / kWh, <em class="not-italic text-slate-500">before GST</em>)</span>
+          <input id="gasTariff" type="number" step="0.0001" min="0" value="0.2192"
                  class="mt-1 block w-full rounded-lg border-slate-300 ring-1 ring-slate-200 focus:ring-2 focus:ring-indigo-500 focus:outline-none px-3 py-2" />
         </label>
         <label class="block">
@@ -106,6 +106,11 @@
         <label class="block">
           <span class="text-sm font-medium text-slate-700">Gas Annual Increase (%)</span>
           <input id="gasIncrease" type="number" step="0.1" min="0" value="3"
+                 class="mt-1 block w-full rounded-lg border-slate-300 ring-1 ring-slate-200 focus:ring-2 focus:ring-indigo-500 focus:outline-none px-3 py-2" />
+        </label>
+        <label class="block md:col-span-2">
+          <span class="text-sm font-medium text-slate-700">GST (%)</span>
+          <input id="gst" type="number" step="0.1" min="0" max="20" value="9"
                  class="mt-1 block w-full rounded-lg border-slate-300 ring-1 ring-slate-200 focus:ring-2 focus:ring-indigo-500 focus:outline-none px-3 py-2" />
         </label>
       </div>
@@ -259,7 +264,7 @@
     const $ = (id) => document.getElementById(id);
 
     const inputs = [
-      'elecTariff','gasTariff','elecIncrease','gasIncrease',
+      'elecTariff','gasTariff','elecIncrease','gasIncrease','gst',
       'household','lppd','coldTemp','heaterType','hotTemp','elecTankL','gasTankL','tankSetpoint',
       'conversionCost','replacementCost','cashback','activeMonths'
     ];
@@ -286,10 +291,11 @@
     const AMBIENT_C         = 28;       // SG ambient assumption for standby loss
 
     const TIPS = {
-      elecTariff: "Electricity rate per kWh from SP Group. Check the latest figure on your utility bill or the SP Group tariff archive.",
-      gasTariff: "Piped gas rate per kWh from City Energy. Tariffs are revised quarterly — check your bill or City Energy newsroom.",
+      elecTariff: "Electricity rate per kWh from SP Group, BEFORE GST. The SP Group tariff archive's primary column shows this value (e.g. 27.27¢ in Apr 2026). GST is applied separately below.",
+      gasTariff: "Piped gas rate per kWh from City Energy, BEFORE GST. Revised quarterly. GST is applied separately below.",
       elecIncrease: "Expected yearly increase in the electricity tariff. Singapore has averaged ~3% historically; bump higher for a more conservative estimate.",
       gasIncrease: "Expected yearly increase in the gas tariff. Gas is more volatile than electricity — try 4–6% for a stress test.",
+      gst: "Goods & Services Tax applied on top of both tariffs. Singapore default is 9% (from 1 Jan 2024). Set to 0 if you've already entered GST-inclusive tariffs above.",
       household: "Total number of people in your home who use hot water regularly.",
       lppd: "Litres of hot water you actually USE per person per day, at the temperature it leaves the tap. SG household average ~80 L/day (~10 min shower at 8 L/min).",
       coldTemp: "Temperature of cold water entering the heater. Singapore tap water sits around 28°C year-round.",
@@ -349,6 +355,7 @@
       const cashback = getNum('cashback');
       const rElec = getNum('elecIncrease') / 100;
       const rGas = getNum('gasIncrease') / 100;
+      const gstFactor = 1 + getNum('gst') / 100;
 
       // Demand model — heating energy is identical for both heaters; standby differs by tank type.
       // Delivery temp is what comes out of the tap; tank standby uses fixed 60°C storage.
@@ -376,8 +383,8 @@
 
       const netInvestment = conversionCost - replacementCost - cashback;
       const annualForYear = (y) => {
-        const elecY = elec * Math.pow(1 + rElec, y - 1);
-        const gasY = gas * Math.pow(1 + rGas, y - 1);
+        const elecY = elec * Math.pow(1 + rElec, y - 1) * gstFactor;
+        const gasY  = gas  * Math.pow(1 + rGas,  y - 1) * gstFactor;
         const elecCost = elecMonthlyKwh * elecY * activeMonths;
         const gasCost  = gasMonthlyKwh  * gasY  * activeMonths;
         return elecCost - gasCost;
