@@ -1,0 +1,334 @@
+
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Methodology — How the Calculator Works</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    pre.formula {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 13px;
+      line-height: 1.6;
+      overflow-x: auto;
+      color: #0f172a;
+    }
+    code.var {
+      background: #eef2ff;
+      color: #4338ca;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 0.92em;
+    }
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      background: #4f46e5;
+      color: white;
+      font-weight: 600;
+      font-size: 14px;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+  <div class="max-w-5xl mx-auto px-4 py-8 sm:py-12">
+
+    <nav class="mb-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm border-b border-slate-200 pb-4">
+      <span class="font-semibold text-slate-900">Water Heater Tools</span>
+      <a href="index.html" class="text-slate-600 hover:text-indigo-600">Calculator</a>
+      <a href="methodology.html" class="text-indigo-600 font-medium">Methodology</a>
+      <a href="learn.html" class="text-slate-600 hover:text-indigo-600">How Heaters Work</a>
+      <a href="faq.html" class="text-slate-600 hover:text-indigo-600">FAQ</a>
+    </nav>
+
+    <header class="mb-10">
+      <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">How the Calculator Works</h1>
+      <p class="text-sm sm:text-base text-slate-600 mt-1">
+        Every formula and constant the ROI calculator uses, in the order they fire. Verify the math
+        against your own bills, or compute scenarios by hand.
+      </p>
+    </header>
+
+    <!-- TL;DR -->
+    <section class="bg-amber-50 ring-1 ring-amber-200 rounded-2xl p-5 sm:p-6 mb-8 text-sm text-amber-900">
+      <h2 class="text-base font-semibold mb-2">In one paragraph</h2>
+      <p>
+        We estimate <strong>monthly hot-water energy</strong> from household size, daily litres, and
+        temperatures. We add <strong>tank standby loss</strong> for storage heaters. We multiply each
+        scenario's monthly kWh by its <strong>tariff</strong>, escalate yearly, and compute the
+        <strong>cumulative savings</strong> against the <strong>net upfront investment</strong>. The
+        first month where cumulative savings cover the investment is the <strong>break-even month</strong>.
+      </p>
+    </section>
+
+    <!-- INPUTS -->
+    <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-6">
+      <h2 class="text-xl font-bold text-slate-900 mb-4">Inputs</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm">
+          <thead>
+            <tr class="text-left text-slate-500 border-b border-slate-200">
+              <th class="py-2 pr-4 font-medium">Variable</th>
+              <th class="py-2 pr-4 font-medium">Symbol</th>
+              <th class="py-2 pr-0 font-medium">Default</th>
+            </tr>
+          </thead>
+          <tbody class="[&amp;>tr]:border-b [&amp;>tr]:border-slate-100 [&amp;>tr>td]:py-2 [&amp;>tr>td]:pr-4">
+            <tr><td>Electricity Tariff (SGD/kWh)</td><td><code class="var">P<sub>e</sub></code></td><td>0.2972</td></tr>
+            <tr><td>Gas Tariff (SGD/kWh)</td><td><code class="var">P<sub>g</sub></code></td><td>0.2389</td></tr>
+            <tr><td>Electricity Annual Increase</td><td><code class="var">r<sub>e</sub></code></td><td>0.03</td></tr>
+            <tr><td>Gas Annual Increase</td><td><code class="var">r<sub>g</sub></code></td><td>0.03</td></tr>
+            <tr><td>Household Size (people)</td><td><code class="var">N</code></td><td>4</td></tr>
+            <tr><td>Hot Water per Person (L/day)</td><td><code class="var">L<sub>p</sub></code></td><td>80</td></tr>
+            <tr><td>Cold Water Inlet Temp (&deg;C)</td><td><code class="var">T<sub>cold</sub></code></td><td>28</td></tr>
+            <tr><td>Hot Water Delivery Temp (&deg;C)</td><td><code class="var">T<sub>del</sub></code></td><td>40</td></tr>
+            <tr><td>Tank Setpoint Temperature (&deg;C)</td><td><code class="var">T<sub>tank</sub></code></td><td>60 (only for tank-with-mixer)</td></tr>
+            <tr><td>Electric Tank Capacity (L)</td><td><code class="var">V<sub>e</sub></code></td><td>50</td></tr>
+            <tr><td>Gas Tank Capacity (L)</td><td><code class="var">V<sub>g</sub></code></td><td>0 (instant)</td></tr>
+            <tr><td>Conversion Cost (SGD)</td><td><code class="var">C<sub>conv</sub></code></td><td>1199</td></tr>
+            <tr><td>Electric Replacement Cost (SGD)</td><td><code class="var">C<sub>repl</sub></code></td><td>500</td></tr>
+            <tr><td>Cashback / Rebate (SGD)</td><td><code class="var">C<sub>cb</sub></code></td><td>0</td></tr>
+            <tr><td>Active Usage Months / Year</td><td><code class="var">M<sub>a</sub></code></td><td>8</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- CONSTANTS -->
+    <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-6">
+      <h2 class="text-xl font-bold text-slate-900 mb-4">Constants</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm">
+          <thead>
+            <tr class="text-left text-slate-500 border-b border-slate-200">
+              <th class="py-2 pr-4 font-medium">Constant</th>
+              <th class="py-2 pr-4 font-medium">Symbol</th>
+              <th class="py-2 pr-4 font-medium">Value</th>
+              <th class="py-2 pr-0 font-medium">Origin</th>
+            </tr>
+          </thead>
+          <tbody class="[&amp;>tr]:border-b [&amp;>tr]:border-slate-100 [&amp;>tr>td]:py-2 [&amp;>tr>td]:pr-4">
+            <tr>
+              <td>Specific heat of water</td>
+              <td><code class="var">c</code></td>
+              <td>0.001163 kWh/(L&middot;&deg;C)</td>
+              <td>4.186 kJ/(kg&middot;K) &divide; 3600, water density 1 kg/L</td>
+            </tr>
+            <tr>
+              <td>Tank standby loss factor</td>
+              <td><code class="var">s</code></td>
+              <td>0.0006 kWh/(L&middot;&deg;C&middot;day)</td>
+              <td>Typical residential tank insulation; ~0.96 kWh/day for a 50 L tank at 32&deg;C above ambient</td>
+            </tr>
+            <tr>
+              <td>Ambient temperature (SG)</td>
+              <td><code class="var">T<sub>amb</sub></code></td>
+              <td>28&deg;C</td>
+              <td>Singapore tropical climate baseline</td>
+            </tr>
+            <tr>
+              <td>Days per month</td>
+              <td><code class="var">D</code></td>
+              <td>30</td>
+              <td>Calendar simplification</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- STEP 1 -->
+    <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-6">
+      <h2 class="text-lg font-bold text-slate-900 mb-3"><span class="step-num">1</span>Net Investment</h2>
+      <p class="text-sm text-slate-700 mb-3">
+        The upfront cost to switch, minus what you'd have spent anyway, minus any cashback.
+      </p>
+      <pre class="formula">I<sub>net</sub> = C<sub>conv</sub> − C<sub>repl</sub> − C<sub>cb</sub></pre>
+      <p class="text-xs text-slate-500 mt-2">
+        Defaults: 1199 − 500 − 0 = <strong>$699</strong>
+      </p>
+    </section>
+
+    <!-- STEP 2 -->
+    <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-6">
+      <h2 class="text-lg font-bold text-slate-900 mb-3"><span class="step-num">2</span>Hot Water Demand (Heating Energy)</h2>
+      <p class="text-sm text-slate-700 mb-3">
+        Energy needed to raise the daily volume of water from cold inlet to delivery temperature. Uses
+        the standard <code>m × c × ΔT</code> form, with <code>m</code> in litres (water density 1 kg/L).
+      </p>
+      <pre class="formula">ΔT<sub>heat</sub>  = max(0, T<sub>del</sub> − T<sub>cold</sub>)
+L<sub>day</sub>     = N × L<sub>p</sub>
+E<sub>heat</sub>    = L<sub>day</sub> × ΔT<sub>heat</sub> × c       [kWh / day]</pre>
+      <p class="text-xs text-slate-500 mt-2">
+        Defaults: ΔT = 40 − 28 = 12&deg;C; L<sub>day</sub> = 4 × 80 = 320 L; E<sub>heat</sub> = 320 × 12 × 0.001163 ≈ <strong>4.47 kWh/day</strong>
+      </p>
+      <div class="bg-indigo-50 ring-1 ring-indigo-200 rounded-lg p-3 text-xs text-indigo-900 mt-3">
+        Heating energy is identical for both heaters &mdash; same water, same temperature rise.
+        The differences appear in the next step (standby) and in the per-heater tariff.
+      </div>
+    </section>
+
+    <!-- STEP 3 -->
+    <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-6">
+      <h2 class="text-lg font-bold text-slate-900 mb-3"><span class="step-num">3</span>Standby Loss (per Heater)</h2>
+      <p class="text-sm text-slate-700 mb-3">
+        Storage tanks leak heat to ambient continuously. Instant heaters have no tank, so no standby
+        loss. The "effective tank temperature" depends on heater type:
+      </p>
+      <pre class="formula">T<sub>eff</sub> = T<sub>tank</sub>   if heaterType = "Storage tank — with shower mixer"
+       T<sub>del</sub>    otherwise
+       (tank-no-mixer: delivery = setpoint;
+        instant: tank capacity is 0, so the value doesn't matter)
+
+ΔT<sub>tank</sub>     = max(0, T<sub>eff</sub> − T<sub>amb</sub>)
+S<sub>elec</sub>      = V<sub>e</sub> × ΔT<sub>tank</sub> × s        [kWh / day]
+S<sub>gas</sub>       = V<sub>g</sub> × ΔT<sub>tank</sub> × s        [kWh / day]</pre>
+      <p class="text-xs text-slate-500 mt-2">
+        Example (50 L electric tank with mixer at 60&deg;C, ambient 28&deg;C):
+        S<sub>elec</sub> = 50 × 32 × 0.0006 = <strong>0.96 kWh/day</strong> (~29 kWh/month).
+      </p>
+    </section>
+
+    <!-- STEP 4 -->
+    <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-6">
+      <h2 class="text-lg font-bold text-slate-900 mb-3"><span class="step-num">4</span>Monthly Energy per Heater</h2>
+      <pre class="formula">U<sub>elec</sub> = (E<sub>heat</sub> + S<sub>elec</sub>) × D       [kWh / month]
+U<sub>gas</sub>  = (E<sub>heat</sub> + S<sub>gas</sub>)  × D       [kWh / month]</pre>
+      <p class="text-xs text-slate-500 mt-2">
+        Defaults (with mixer, 60&deg;C tank): U<sub>elec</sub> = (4.47 + 0.96) × 30 ≈ <strong>162.8 kWh/mo</strong>;
+        U<sub>gas</sub> = 4.47 × 30 ≈ <strong>134.0 kWh/mo</strong>.
+      </p>
+    </section>
+
+    <!-- STEP 5 -->
+    <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-6">
+      <h2 class="text-lg font-bold text-slate-900 mb-3"><span class="step-num">5</span>Year-by-Year Tariffs &amp; Annual Savings</h2>
+      <p class="text-sm text-slate-700 mb-3">
+        Each tariff compounds at its own annual rate. Costs accrue only during active usage months.
+        Savings are the electric scenario's cost minus the gas scenario's cost.
+      </p>
+      <pre class="formula">P<sub>e</sub>(N) = P<sub>e</sub> × (1 + r<sub>e</sub>)<sup>N−1</sup>
+P<sub>g</sub>(N) = P<sub>g</sub> × (1 + r<sub>g</sub>)<sup>N−1</sup>
+
+Cost<sub>elec</sub>(N) = U<sub>elec</sub> × P<sub>e</sub>(N) × M<sub>a</sub>
+Cost<sub>gas</sub>(N)  = U<sub>gas</sub>  × P<sub>g</sub>(N) × M<sub>a</sub>
+
+A(N) = Cost<sub>elec</sub>(N) − Cost<sub>gas</sub>(N)         [annual savings, year N]</pre>
+      <p class="text-xs text-slate-500 mt-2">
+        Defaults: A(1) = 162.8 × 0.2972 × 8 − 134.0 × 0.2389 × 8 ≈ 387.1 − 256.1 = <strong>$131/yr</strong>.
+      </p>
+    </section>
+
+    <!-- STEP 6 -->
+    <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-6">
+      <h2 class="text-lg font-bold text-slate-900 mb-3"><span class="step-num">6</span>Cumulative Savings &amp; Net Position</h2>
+      <pre class="formula">Cum(N) = Σ<sub>k=1..N</sub> A(k)
+Net(N) = Cum(N) − I<sub>net</sub></pre>
+      <p class="text-xs text-slate-500 mt-2">
+        These produce the 10-year projection table. The row where <code>Net(N) ≥ 0</code> contains the break-even month.
+      </p>
+    </section>
+
+    <!-- STEP 7 -->
+    <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-6">
+      <h2 class="text-lg font-bold text-slate-900 mb-3"><span class="step-num">7</span>Break-Even Month &amp; Payback Period</h2>
+      <p class="text-sm text-slate-700 mb-3">
+        Walk forward month-by-month. Each <em>active</em> month adds <code>1/M<sub>a</sub></code> of
+        that year's annual savings. Off-months contribute zero. The first month the running total
+        reaches the net investment is the break-even month.
+      </p>
+      <pre class="formula">cum ← 0
+for m from 1 to 600:
+    yearIdx     ← ⌈m / 12⌉
+    monthInYear ← ((m − 1) mod 12) + 1
+    if monthInYear ≤ M<sub>a</sub>:
+        cum ← cum + A(yearIdx) / M<sub>a</sub>
+    if cum ≥ I<sub>net</sub>:
+        return m   ← break-even month
+
+Payback (years) = m / 12</pre>
+      <p class="text-xs text-slate-500 mt-2">
+        The 600-month cap (50 years) prevents an infinite loop in pathological cases. Special results:
+      </p>
+      <ul class="list-disc list-inside text-xs text-slate-500 mt-1 space-y-0.5">
+        <li><code>I<sub>net</sub> ≤ 0</code>  →  "Already paid back" (replacement cost ≥ conversion cost)</li>
+        <li><code>A(1) ≤ 0</code>  →  "No payback" (gas not cheaper, or standby ≥ savings)</li>
+        <li>Loop hits the cap  →  "&gt; 50 years"</li>
+      </ul>
+    </section>
+
+    <!-- WORKED EXAMPLE -->
+    <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-7 mb-6">
+      <h2 class="text-xl font-bold text-slate-900 mb-4">Worked Example (Default Inputs)</h2>
+      <p class="text-sm text-slate-700 mb-4">
+        Heater type: <em>Storage tank — with shower mixer</em>. Electric tank 50 L at 60&deg;C setpoint,
+        replacing with gas instant. Delivery temp 40&deg;C, cold inlet 28&deg;C, household of 4 at
+        80 L/person/day, 8 active months, 3% annual escalation on both tariffs.
+      </p>
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm border border-slate-200 rounded-lg">
+          <thead class="bg-slate-50">
+            <tr class="text-left text-slate-600 border-b border-slate-200">
+              <th class="py-2 px-3 font-medium">Step</th>
+              <th class="py-2 px-3 font-medium">Calculation</th>
+              <th class="py-2 px-3 font-medium">Result</th>
+            </tr>
+          </thead>
+          <tbody class="[&amp;>tr]:border-b [&amp;>tr]:border-slate-100 [&amp;>tr>td]:py-2 [&amp;>tr>td]:px-3 [&amp;>tr>td]:align-top">
+            <tr><td>Net Investment</td><td>1199 − 500 − 0</td><td><strong>$699</strong></td></tr>
+            <tr><td>Heating ΔT</td><td>40 − 28</td><td>12&deg;C</td></tr>
+            <tr><td>Daily litres</td><td>4 × 80</td><td>320 L</td></tr>
+            <tr><td>Heating energy / day</td><td>320 × 12 × 0.001163</td><td>4.47 kWh</td></tr>
+            <tr><td>Tank ΔT (mixer)</td><td>60 − 28</td><td>32&deg;C</td></tr>
+            <tr><td>Electric standby / day</td><td>50 × 32 × 0.0006</td><td>0.96 kWh</td></tr>
+            <tr><td>Gas standby / day</td><td>0 × 32 × 0.0006</td><td>0 kWh</td></tr>
+            <tr><td>U<sub>elec</sub></td><td>(4.47 + 0.96) × 30</td><td>162.9 kWh/mo</td></tr>
+            <tr><td>U<sub>gas</sub></td><td>(4.47 + 0)    × 30</td><td>134.0 kWh/mo</td></tr>
+            <tr><td>Year-1 elec cost</td><td>162.9 × 0.2972 × 8</td><td>$387.3</td></tr>
+            <tr><td>Year-1 gas cost</td><td>134.0 × 0.2389 × 8</td><td>$256.2</td></tr>
+            <tr><td>Year-1 savings A(1)</td><td>387.3 − 256.2</td><td><strong>$131.1</strong></td></tr>
+            <tr><td>10-yr cumulative (≈3% growth)</td><td>131.1 × ((1.03)<sup>10</sup>−1) / 0.03</td><td>~$1,503</td></tr>
+            <tr><td>Break-even (loop)</td><td>iterate active months</td><td><strong>~year 5–6</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="text-xs text-slate-500 mt-3">
+        Open the calculator with the same inputs to verify these numbers match.
+      </p>
+    </section>
+
+    <!-- ASSUMPTIONS -->
+    <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-6">
+      <h2 class="text-xl font-bold text-slate-900 mb-3">Assumptions &amp; Limitations</h2>
+      <ul class="list-disc list-inside text-sm text-slate-700 space-y-1">
+        <li><strong>Equal heater efficiency.</strong> Heating energy is treated as identical for gas and electric. In reality, gas heaters lose ~15&ndash;20% up the flue, electric is ~95&ndash;98% efficient. Not modelling that overstates gas's per-kWh advantage. See the <a href="learn.html" class="text-indigo-600 hover:underline">How Heaters Work</a> page for the efficiency-adjusted view.</li>
+        <li><strong>Standby loss factor</strong> <code class="var">s = 0.0006</code> is a typical residential value; well-insulated tanks are lower, ageing tanks higher.</li>
+        <li><strong>Active months</strong> are assumed contiguous (months 1..M<sub>a</sub> of each year). Off-months contribute zero usage.</li>
+        <li><strong>Tariffs compound annually</strong> at a constant rate. Real tariffs are revised quarterly and can swing in either direction.</li>
+        <li><strong>No standing charges or fixed fees</strong> are modelled. If switching off gas eliminates a $15&ndash;20/month standing charge, real savings exceed the calculator's output.</li>
+        <li><strong>Hot water demand</strong> is assumed constant year-round (subject to active-months gating). Seasonal variation is not modelled.</li>
+        <li><strong>30 days/month</strong> is a calendar simplification. Off by ~1.7% from a true mean (30.44).</li>
+      </ul>
+    </section>
+
+    <footer class="text-xs text-slate-500 leading-relaxed mt-8">
+      <p>
+        This page is generated from the same constants and formulas the calculator runs in your browser.
+        Open <a class="text-indigo-600 hover:underline" href="index.html">view-source on the calculator</a>
+        to inspect the implementation directly.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>
