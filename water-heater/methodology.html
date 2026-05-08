@@ -17,8 +17,8 @@
       color: #0f172a;
     }
     code.var {
-      background: #eef2ff;
-      color: #4338ca;
+      background: #f0fdfa;
+      color: #0f766e;
       padding: 1px 5px;
       border-radius: 4px;
       font-size: 0.92em;
@@ -30,7 +30,7 @@
       width: 28px;
       height: 28px;
       border-radius: 999px;
-      background: #4f46e5;
+      background: #0d9488;
       color: white;
       font-weight: 600;
       font-size: 14px;
@@ -39,16 +39,19 @@
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen">
-  <div class="max-w-5xl mx-auto px-4 py-8 sm:py-12">
-
-    <nav class="mb-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm border-b border-slate-200 pb-4">
-      <span class="font-semibold text-slate-900">Water Heater Tools</span>
-      <a href="index.html" class="text-slate-600 hover:text-indigo-600">Calculator</a>
-      <a href="tariffs.html" class="text-slate-600 hover:text-indigo-600">Tariffs</a>
-      <a href="methodology.html" class="text-indigo-600 font-medium">Methodology</a>
-      <a href="learn.html" class="text-slate-600 hover:text-indigo-600">How Heaters Work</a>
-      <a href="faq.html" class="text-slate-600 hover:text-indigo-600">FAQ</a>
-    </nav>
+  <header class="md:hidden flex items-center gap-3 px-4 py-3 bg-white border-b border-slate-200 sticky top-0 z-20">
+    <button id="navToggle" class="p-1 rounded hover:bg-slate-100" aria-label="Toggle navigation">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <span class="font-semibold text-slate-900">ROI Tools</span>
+  </header>
+  <div id="navBackdrop" class="hidden fixed inset-0 bg-slate-900/40 z-30 md:hidden"></div>
+  <div class="md:flex">
+    <aside id="sidebar"
+      class="fixed md:sticky top-0 left-0 z-40 w-64 h-screen bg-white border-r border-slate-200 overflow-y-auto -translate-x-full md:translate-x-0 transition-transform duration-200 md:transition-none"></aside>
+    <div class="flex-1 min-w-0">
+      <nav id="subtabs" class="bg-white border-b border-slate-200 md:sticky md:top-0 z-10"></nav>
+      <main class="max-w-5xl mx-auto px-4 py-6 sm:py-8">
 
     <header class="mb-10">
       <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">How the Calculator Works</h1>
@@ -172,7 +175,7 @@ E<sub>heat</sub>    = L<sub>day</sub> × ΔT<sub>heat</sub> × c       [kWh / da
       <p class="text-xs text-slate-500 mt-2">
         Defaults: ΔT = 40 − 28 = 12&deg;C; L<sub>day</sub> = 4 × 80 = 320 L; E<sub>heat</sub> = 320 × 12 × 0.001163 ≈ <strong>4.47 kWh/day</strong>
       </p>
-      <div class="bg-indigo-50 ring-1 ring-indigo-200 rounded-lg p-3 text-xs text-indigo-900 mt-3">
+      <div class="bg-teal-50 ring-1 ring-teal-200 rounded-lg p-3 text-xs text-teal-900 mt-3">
         Heating energy is identical for both heaters &mdash; same water, same temperature rise.
         The differences appear in the next step (standby) and in the per-heater tariff.
       </div>
@@ -313,7 +316,7 @@ Payback (years) = m / 12</pre>
     <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-6">
       <h2 class="text-xl font-bold text-slate-900 mb-3">Assumptions &amp; Limitations</h2>
       <ul class="list-disc list-inside text-sm text-slate-700 space-y-1">
-        <li><strong>Equal heater efficiency.</strong> Heating energy is treated as identical for gas and electric. In reality, gas heaters lose ~15&ndash;20% up the flue, electric is ~95&ndash;98% efficient. Not modelling that overstates gas's per-kWh advantage. See the <a href="learn.html" class="text-indigo-600 hover:underline">How Heaters Work</a> page for the efficiency-adjusted view.</li>
+        <li><strong>Equal heater efficiency.</strong> Heating energy is treated as identical for gas and electric. In reality, gas heaters lose ~15&ndash;20% up the flue, electric is ~95&ndash;98% efficient. Not modelling that overstates gas's per-kWh advantage. See the <a href="learn.html" class="text-teal-600 hover:underline">How Heaters Work</a> page for the efficiency-adjusted view.</li>
         <li><strong>Standby loss factor</strong> <code class="var">s = 0.0006</code> is a typical residential value; well-insulated tanks are lower, ageing tanks higher.</li>
         <li><strong>Active months</strong> are assumed contiguous (months 1..M<sub>a</sub> of each year). Off-months contribute zero usage.</li>
         <li><strong>Tariffs compound annually</strong> at a constant rate. Real tariffs are revised quarterly and can swing in either direction.</li>
@@ -326,11 +329,14 @@ Payback (years) = m / 12</pre>
     <footer class="text-xs text-slate-500 leading-relaxed mt-8">
       <p>
         This page is generated from the same constants and formulas the calculator runs in your browser.
-        Open <a class="text-indigo-600 hover:underline" href="index.html">view-source on the calculator</a>
+        Open <a class="text-teal-600 hover:underline" href="index.html">view-source on the calculator</a>
         to inspect the implementation directly.
       </p>
     </footer>
 
+      </main>
+    </div>
   </div>
+  <script src="/assets/nav.js"></script>
 </body>
 </html>

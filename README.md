@@ -1,34 +1,79 @@
-# Gas / Electric Water Heater ROI Calculator
+# ROI Tools — Singapore Home Calculators
 
-A Singapore-focused tool for estimating the payback period of switching between
-gas and electric water heaters. Built as a static, single-folder website — no
-build step, no backend, no dependencies beyond CDN-loaded Tailwind CSS and
-Chart.js.
+A small static site of payback-period calculators for everyday Singapore home decisions.
+Built as a single-folder website — no build step, no backend, just HTML + Tailwind (CDN) +
+a touch of vanilla JS.
 
-## Pages
+## Layout
 
-| File              | Purpose                                                                                  |
-| ----------------- | ---------------------------------------------------------------------------------------- |
-| `index.html`      | The ROI calculator — live inputs, results card, 10-year projection table.                |
-| `tariffs.html`    | Historical tariff charts (SP Group electricity, City Energy town gas) with key stats.    |
-| `methodology.html`| Every formula and constant the calculator uses, plus a worked example.                   |
-| `learn.html`      | How instant electric, electric storage tank, and gas heaters work — diagrams + comparison. |
-| `faq.html`        | Practical questions about hot-water usage, heater types, and the calculator's framing.   |
+A persistent left **sidebar** lists every calculator in the site. The active calculator's
+own pages (calculator, methodology, FAQ, etc.) appear as **horizontal tabs** at the top of
+the main area. On mobile the sidebar collapses into a hamburger drawer.
 
-All pages share a top nav: **Calculator · Tariffs · Methodology · How Heaters Work · FAQ**.
+Adding a new calculator means adding one entry to `assets/nav.js` and dropping a folder
+of pages — no per-page nav edits.
+
+## Calculators
+
+| Slug          | Status        | What it does                                                |
+| ------------- | ------------- | ----------------------------------------------------------- |
+| `water-heater`| Live          | Gas vs. electric water heater, with payback period.         |
+| `aircon`      | Coming soon   | Replacement ROI for older aircon units (placeholder stub).  |
+
+## Folder structure
+
+```
+.
+├── index.html                   # landing page — calculator picker
+├── assets/
+│   └── nav.js                   # calculator registry + sidebar/sub-tab renderer
+├── water-heater/
+│   ├── index.html               # the calculator
+│   ├── tariffs.html             # historical SP / City Energy charts
+│   ├── methodology.html         # every formula and constant
+│   ├── learn.html               # how each heater type works
+│   ├── faq.html                 # common questions
+│   └── data/
+│       ├── tariffs-data.json
+│       ├── Historical Electricity Tariff.xlsx
+│       └── Historical-Town-Gas-Tariffs_from_2007-to-2026-June.xlsx
+├── aircon/
+│   └── index.html               # "coming soon" stub
+└── README.md
+```
 
 ## Running locally
-
-The pages are pure static HTML — open `index.html` directly in a browser, or serve the directory:
 
 ```bash
 python3 -m http.server 8000
 # then visit http://localhost:8000/
 ```
 
-A real HTTP server is recommended for the tariff charts (Chart.js loads cleaner over `http://`).
+A real HTTP server is required because pages reference `/assets/nav.js` with an
+absolute path. Opening pages directly via `file://` will not load the nav.
 
-## Calculation model (summary)
+## Adding a new calculator
+
+1. Add an entry to the `CALCULATORS` array in `assets/nav.js`:
+   ```js
+   {
+     slug: 'solar',
+     title: 'Solar PV',
+     icon: '☀',
+     description: 'Rooftop payback for HDB / landed homes',
+     pages: [
+       { slug: '',            title: 'Calculator' },
+       { slug: 'methodology', title: 'Methodology' },
+       { slug: 'faq',         title: 'FAQ' }
+     ]
+   }
+   ```
+2. Create `solar/index.html`, `solar/methodology.html`, `solar/faq.html`.
+3. Each page uses the standard layout shell (mobile header + sidebar + sub-tab nav + main).
+   Easiest path: copy any page in `water-heater/` and replace the body content. The shell
+   markup is identical across calculators; `nav.js` populates the active state automatically.
+
+## Water Heater calculator: model summary
 
 Inputs split across three groups:
 
@@ -48,7 +93,8 @@ A(N)           = U_elec·P_e(N)·M_a − U_gas·P_g(N)·M_a         [annual savi
 break-even     = first month where Σ active-month savings ≥ I_net
 ```
 
-Constants: `c = 0.001163 kWh/(L·°C)`, `s = 0.0006 kWh/(L·°C·day)`, `T_amb = 28 °C` (SG), `D = 30 days/month`. Full derivation in `methodology.html`.
+Constants: `c = 0.001163 kWh/(L·°C)`, `s = 0.0006 kWh/(L·°C·day)`, `T_amb = 28 °C` (SG), `D = 30 days/month`.
+Full derivation in `water-heater/methodology.html`.
 
 ## Data sources
 
@@ -56,23 +102,20 @@ Constants: `c = 0.001163 kWh/(L·°C)`, `s = 0.0006 kWh/(L·°C·day)`, `T_amb =
 - **Town gas tariffs** — [City Energy Newsroom](https://cityenergy.com.sg/newsroom/). General tariff (residential), 2007–present.
 - **Cross-check** — [EMA Statistics](https://www.ema.gov.sg/resources/statistics).
 
-Raw spreadsheets are in the repo root:
-
-- `Historical Electricity Tariff.xlsx`
-- `Historical-Town-Gas-Tariffs_from_2007-to-2026-June.xlsx`
-
-The cleaned series used by `tariffs.html` is embedded inline in that file (also exported as `tariffs-data.json`).
+Raw spreadsheets ship with the repo under `water-heater/data/`. The cleaned series used
+by `tariffs.html` is embedded inline in that file (also exported as `data/tariffs-data.json`).
 
 ## Tech stack
 
 - HTML + vanilla JS, no framework, no build.
 - Tailwind CSS via CDN (`cdn.tailwindcss.com`).
-- Chart.js v4 + `chartjs-adapter-date-fns` via CDN, only on `tariffs.html`.
+- Chart.js v4 + `chartjs-adapter-date-fns` via CDN, only on the tariffs page.
 - Inline SVG for heater diagrams on `learn.html`.
 
 ## Assumptions worth knowing
 
-- Heating energy is treated as identical for gas and electric (no efficiency derating in the calc itself; `learn.html` discusses this).
+- Heating energy is treated as identical for gas and electric (no efficiency derating in
+  the calc itself; `learn.html` discusses this explicitly).
 - Tariffs compound annually at a constant rate; real tariffs are revised quarterly.
 - Active months are contiguous (months 1..M_a of each year contribute; off-months are zero).
 - 30-day months. Standing charges are not modelled.
