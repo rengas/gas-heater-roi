@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Aircon ROI — FAQ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    details > summary { list-style: none; cursor: pointer; }
+    details > summary::-webkit-details-marker { display: none; }
+    details[open] .chev { transform: rotate(90deg); }
+    .chev { transition: transform 150ms; display: inline-block; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+  <header class="md:hidden flex items-center gap-3 px-4 py-3 bg-white border-b border-slate-200 sticky top-0 z-20">
+    <button id="navToggle" class="p-1 rounded hover:bg-slate-100" aria-label="Toggle navigation">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <span class="font-semibold text-slate-900">ROI Tools</span>
+  </header>
+  <div id="navBackdrop" class="hidden fixed inset-0 bg-slate-900/40 z-30 md:hidden"></div>
+  <div class="md:flex">
+    <aside id="sidebar"
+      class="fixed md:sticky top-0 left-0 z-40 w-64 h-screen bg-white border-r border-slate-200 overflow-y-auto -translate-x-full md:translate-x-0 transition-transform duration-200 md:transition-none"></aside>
+    <div class="flex-1 min-w-0">
+      <nav id="subtabs" class="bg-white border-b border-slate-200 md:sticky md:top-0 z-10"></nav>
+      <main class="max-w-5xl mx-auto px-4 py-6 sm:py-8">
+
+        <header class="mb-6">
+          <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">Aircon ROI — FAQ</h1>
+          <p class="text-sm sm:text-base text-slate-600 mt-1">
+            Practical questions about sizing, system configurations, and using the calculator.
+          </p>
+        </header>
+
+        <section class="space-y-3">
+
+          <details class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 group" open>
+            <summary class="flex items-start justify-between gap-3">
+              <h2 class="text-base sm:text-lg font-semibold text-slate-900">What's a "2-system" / "3-system" / "4-system"?</h2>
+              <span class="chev text-slate-400 mt-1">&rsaquo;</span>
+            </summary>
+            <div class="mt-4 text-sm text-slate-700 leading-relaxed space-y-2">
+              <p>It's the SG installer shorthand for <strong>multi-split</strong> systems &mdash; one outdoor unit driving multiple indoor heads:</p>
+              <ul class="list-disc list-inside space-y-1">
+                <li><strong>1-system</strong>: 1 outdoor → 1 indoor (also called single-split)</li>
+                <li><strong>2-system</strong>: 1 outdoor → 2 indoor (typical: living + 1 bedroom)</li>
+                <li><strong>3-system</strong>: 1 outdoor → 3 indoor (living + master + 1 BR — the most common HDB configuration)</li>
+                <li><strong>4-system / 5-system</strong>: living + master + 2–3 BRs</li>
+              </ul>
+              <p>Multi-split saves ledge space (one outdoor unit instead of N), but the published Weighted COP is for the matched system as a whole. In practice the real-world COP runs ~10% below an equivalent single-split because of part-load behavior and refrigerant losses across long pipe runs.</p>
+            </div>
+          </details>
+
+          <details class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 group">
+            <summary class="flex items-start justify-between gap-3">
+              <h2 class="text-base sm:text-lg font-semibold text-slate-900">How many BTU do I need per room?</h2>
+              <span class="chev text-slate-400 mt-1">&rsaquo;</span>
+            </summary>
+            <div class="mt-4 text-sm text-slate-700 leading-relaxed space-y-2">
+              <p>Singapore rule of thumb: <strong>~600 BTU/h per m²</strong> of floor area (humidity adds latent load on top of pure heat removal). Quick table:</p>
+              <ul class="list-disc list-inside space-y-1">
+                <li>Standard bedroom (~10 m²) → 9,000 BTU = 2.6 kW</li>
+                <li>Master bedroom (~14 m²) → 12,000 BTU = 3.5 kW</li>
+                <li>Living/dining (~20 m²) → 18,000 BTU = 5.0 kW</li>
+                <li>Large open-plan living (~28 m²) → 24,000 BTU = 7.0 kW</li>
+              </ul>
+              <p>West-facing rooms with afternoon sun benefit from one size up. Don't over-oversize &mdash; a too-large unit will cool fast then cycle without dehumidifying, leaving the room clammy.</p>
+            </div>
+          </details>
+
+          <details class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 group">
+            <summary class="flex items-start justify-between gap-3">
+              <h2 class="text-base sm:text-lg font-semibold text-slate-900">Is upgrading from a 3★ to a 5★ aircon really worth it?</h2>
+              <span class="chev text-slate-400 mt-1">&rsaquo;</span>
+            </summary>
+            <div class="mt-4 text-sm text-slate-700 leading-relaxed space-y-2">
+              <p>It depends entirely on hours of use. The calculator does this exact comparison &mdash; load it up with your rooms and hours.</p>
+              <p>Quick intuition: the energy ratio is <code>COP_old / COP_new</code>. A 2★ unit with COP ~3.4 vs a 5★ with COP ~5.5 means the new unit uses <strong>3.4 / 5.5 = 62%</strong> of the energy for the same cooling. On a household pulling 2,500 kWh/year on aircon, that's ~950 kWh saved &times; current SG tariff = <strong>~$320/year</strong>.</p>
+              <p>If the price premium is $1,500 (4★ → 5★ or 2★ → 5★), payback is ~5 years on the unit price difference alone. Faster if you're already replacing for end-of-life and don't count the full unit cost as marginal.</p>
+              <p>Where it doesn't pay back: a single bedroom run 2 hrs/night. Annual energy use is too low for the COP gap to matter much.</p>
+            </div>
+          </details>
+
+          <details class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 group">
+            <summary class="flex items-start justify-between gap-3">
+              <h2 class="text-base sm:text-lg font-semibold text-slate-900">What's the multi-split COP penalty?</h2>
+              <span class="chev text-slate-400 mt-1">&rsaquo;</span>
+            </summary>
+            <div class="mt-4 text-sm text-slate-700 leading-relaxed space-y-2">
+              <p>The COP value NEA publishes for a multi-split system is at <strong>matched test conditions</strong> with all indoor units operating. In real installs:</p>
+              <ul class="list-disc list-inside space-y-1">
+                <li>One outdoor unit serving multiple zones rarely runs all of them at design conditions simultaneously.</li>
+                <li>Long refrigerant pipe runs (HDB ledge → bedroom can be 8–12m) cost a few percent in heat-exchange efficiency.</li>
+                <li>When only one indoor head is on, the outdoor compressor often runs at minimum speed &mdash; less efficient than its sweet spot.</li>
+              </ul>
+              <p>Net real-world COP typically falls 5–15% below rated. The calculator's default penalty is 10%, configurable in <em>Tariffs &amp; Assumptions</em>.</p>
+            </div>
+          </details>
+
+          <details class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 group">
+            <summary class="flex items-start justify-between gap-3">
+              <h2 class="text-base sm:text-lg font-semibold text-slate-900">What load factor and diversity factor should I use?</h2>
+              <span class="chev text-slate-400 mt-1">&rsaquo;</span>
+            </summary>
+            <div class="mt-4 text-sm text-slate-700 leading-relaxed space-y-2">
+              <p><strong>Load factor (α)</strong>: how much of nameplate capacity the compressor actually delivers on average. An inverter unit cooling a moderately insulated room rarely runs at 100%; once at setpoint it idles down to 30–50%. Default <strong>0.65</strong> reflects that.</p>
+              <p><strong>Diversity factor (δ)</strong>: how much of total system capacity actually runs simultaneously. If your living room runs evenings and bedrooms at night, peak overlap is brief. Default <strong>0.7</strong>.</p>
+              <p>If you tend to run all rooms at once (work-from-home + bedrooms + living all day), bump diversity to 0.85–1.0. If only one room at a time, drop it to 0.4–0.5.</p>
+            </div>
+          </details>
+
+          <details class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 group">
+            <summary class="flex items-start justify-between gap-3">
+              <h2 class="text-base sm:text-lg font-semibold text-slate-900">What about the Climate Voucher / NEA rebates?</h2>
+              <span class="chev text-slate-400 mt-1">&rsaquo;</span>
+            </summary>
+            <div class="mt-4 text-sm text-slate-700 leading-relaxed space-y-2">
+              <p>NEA and CDC schemes around energy-efficient appliances change frequently &mdash; rebate amounts, eligibility (HDB only / private / both), and which star ratings qualify all shift. Rather than hardcode rules that go stale, the calculator has a manual <strong>Rebate / Climate Voucher</strong> field on each option.</p>
+              <p>Check the current scheme directly:</p>
+              <ul class="list-disc list-inside space-y-1">
+                <li><a class="text-teal-600 hover:underline" href="https://www.nea.gov.sg/our-services/climate-change-energy-efficiency/energy-efficiency/household-sector/energy-labelling-scheme" target="_blank" rel="noopener">NEA Energy Labelling Scheme</a></li>
+                <li>CDC Climate Voucher / Climate Action Pledge announcements (currently $300–400 for qualifying 4★/5★ aircons in many cycles).</li>
+              </ul>
+              <p>Enter the actual rebate you'd receive. The calculator subtracts it from upfront cost when computing payback.</p>
+            </div>
+          </details>
+
+          <details class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 group">
+            <summary class="flex items-start justify-between gap-3">
+              <h2 class="text-base sm:text-lg font-semibold text-slate-900">Why do the calculator's annual kWh numbers differ from NEA's?</h2>
+              <span class="chev text-slate-400 mt-1">&rsaquo;</span>
+            </summary>
+            <div class="mt-4 text-sm text-slate-700 leading-relaxed space-y-2">
+              <p>NEA's published <em>Annual Energy Consumption (kWh)</em> uses a fixed standardised usage profile (specific outdoor temperature, fixed run hours per year) so all aircons can be compared apples-to-apples. It doesn't reflect <em>your</em> hours, room sizes, or load.</p>
+              <p>This calculator does the opposite: it computes energy use directly from the rooms you specify, your hours, and the rated Weighted COP/IEER. So if you run aircon more than NEA's assumed hours, your number will be higher; less, lower.</p>
+              <p>Treat the NEA kWh column on the <a class="text-teal-600 hover:underline" href="models.html">Models</a> page as a <strong>relative ranking</strong> (good for sorting), not an absolute prediction.</p>
+            </div>
+          </details>
+
+          <details class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 group">
+            <summary class="flex items-start justify-between gap-3">
+              <h2 class="text-base sm:text-lg font-semibold text-slate-900">Should I pick a 3-phase VRV system?</h2>
+              <span class="chev text-slate-400 mt-1">&rsaquo;</span>
+            </summary>
+            <div class="mt-4 text-sm text-slate-700 leading-relaxed space-y-2">
+              <p>Probably not, for typical HDB / smaller condo. VRV/VRF needs a 3-phase electrical supply, professional commissioning, and is much more expensive upfront. It shines when:</p>
+              <ul class="list-disc list-inside space-y-1">
+                <li>You have 6+ indoor heads (large landed, penthouse, two-storey).</li>
+                <li>Independent zone control with very different schedules matters (bedrooms vs living vs office vs guest room all run different hours).</li>
+                <li>You already have 3-phase supply (most HDB and many condos don't).</li>
+              </ul>
+              <p>For a typical 3- or 4-system HDB/condo, a high-tick multi-split is almost always the better economic choice.</p>
+            </div>
+          </details>
+
+        </section>
+
+        <footer class="text-xs text-slate-500 leading-relaxed mt-8">
+          <p>
+            See <a class="text-teal-600 hover:underline" href="methodology.html">Methodology</a> for formulas and constants, or
+            <a class="text-teal-600 hover:underline" href="learn.html">How Aircons Work</a> for the underlying mechanics.
+          </p>
+        </footer>
+
+      </main>
+    </div>
+  </div>
+  <script src="/assets/nav.js"></script>
+</body>
+</html>

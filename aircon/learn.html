@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>How Aircons Work — COP, IEER, Ticks, Inverters</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+  <header class="md:hidden flex items-center gap-3 px-4 py-3 bg-white border-b border-slate-200 sticky top-0 z-20">
+    <button id="navToggle" class="p-1 rounded hover:bg-slate-100" aria-label="Toggle navigation">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <span class="font-semibold text-slate-900">ROI Tools</span>
+  </header>
+  <div id="navBackdrop" class="hidden fixed inset-0 bg-slate-900/40 z-30 md:hidden"></div>
+  <div class="md:flex">
+    <aside id="sidebar"
+      class="fixed md:sticky top-0 left-0 z-40 w-64 h-screen bg-white border-r border-slate-200 overflow-y-auto -translate-x-full md:translate-x-0 transition-transform duration-200 md:transition-none"></aside>
+    <div class="flex-1 min-w-0">
+      <nav id="subtabs" class="bg-white border-b border-slate-200 md:sticky md:top-0 z-10"></nav>
+      <main class="max-w-5xl mx-auto px-4 py-6 sm:py-8">
+
+        <header class="mb-8">
+          <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">How Aircons Work</h1>
+          <p class="text-sm sm:text-base text-slate-600 mt-1">
+            What COP and IEER actually measure, why ticks matter, what an inverter does, and the difference
+            between single-split, multi-split, and VRV systems.
+          </p>
+        </header>
+
+        <!-- TL;DR -->
+        <section class="bg-amber-50 ring-1 ring-amber-200 rounded-2xl p-5 sm:p-6 mb-6 text-sm text-amber-900">
+          <h2 class="text-base font-semibold mb-2">TL;DR</h2>
+          <ul class="list-disc list-inside space-y-1">
+            <li><strong>COP</strong> = how many kWh of cooling you get per kWh of electricity. Higher is better.
+              A 5★ aircon at COP 5.5 gives you 5.5 kWh of cooling for every 1 kWh you pay for.</li>
+            <li><strong>Ticks</strong> are NEA's 1–5 star labels. Each tick is roughly +0.5–0.8 COP.</li>
+            <li><strong>Inverter</strong> compressors modulate speed instead of cycling on/off &mdash; same cooling, less wasted energy, much quieter.</li>
+            <li><strong>Multi-split</strong> shares one outdoor unit across rooms. Convenient, slightly less efficient than matching single-splits.</li>
+            <li><strong>5★ vs 3★</strong> on a 3-system aircon running 6 hrs/day saves roughly <strong>$300–500/year</strong> in SG. Payback against the price premium is usually 4–6 years.</li>
+          </ul>
+        </section>
+
+        <!-- THE REFRIGERATION CYCLE -->
+        <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-6">
+          <h2 class="text-xl font-bold text-slate-900 mb-3">The cycle in one diagram</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+            <div>
+              <svg viewBox="0 0 320 240" class="w-full max-w-md mx-auto" aria-label="Refrigeration cycle">
+                <!-- Indoor unit (evaporator) -->
+                <rect x="20" y="80" width="100" height="80" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+                <text x="70" y="110" text-anchor="middle" font-size="11" fill="#1e3a8a">Indoor</text>
+                <text x="70" y="125" text-anchor="middle" font-size="9" fill="#1e3a8a">(evaporator)</text>
+                <text x="70" y="145" text-anchor="middle" font-size="9" fill="#1e3a8a">absorbs heat</text>
+
+                <!-- Outdoor unit (condenser) -->
+                <rect x="200" y="80" width="100" height="80" rx="8" fill="#fed7aa" stroke="#ea580c" stroke-width="2"/>
+                <text x="250" y="110" text-anchor="middle" font-size="11" fill="#7c2d12">Outdoor</text>
+                <text x="250" y="125" text-anchor="middle" font-size="9" fill="#7c2d12">(condenser)</text>
+                <text x="250" y="145" text-anchor="middle" font-size="9" fill="#7c2d12">dumps heat</text>
+
+                <!-- Lines + compressor -->
+                <line x1="120" y1="100" x2="200" y2="100" stroke="#dc2626" stroke-width="2"/>
+                <text x="160" y="93" text-anchor="middle" font-size="9" fill="#991b1b">hot gas →</text>
+                <line x1="120" y1="140" x2="200" y2="140" stroke="#2563eb" stroke-width="2"/>
+                <text x="160" y="155" text-anchor="middle" font-size="9" fill="#1e3a8a">← cold liquid</text>
+                <circle cx="160" cy="100" r="9" fill="#fff" stroke="#dc2626" stroke-width="2"/>
+                <text x="160" y="103" text-anchor="middle" font-size="9" fill="#dc2626">⚙</text>
+                <text x="160" y="78" text-anchor="middle" font-size="9" fill="#475569">compressor</text>
+
+                <!-- Power input -->
+                <line x1="160" y1="190" x2="160" y2="210" stroke="#facc15" stroke-width="3" stroke-dasharray="3,2"/>
+                <text x="160" y="225" text-anchor="middle" font-size="10" fill="#854d0e">~ AC power in (1 unit)</text>
+
+                <!-- Heat in / out arrows -->
+                <text x="20" y="200" font-size="10" fill="#1e3a8a">heat in (3–6 units)</text>
+                <text x="220" y="200" font-size="10" fill="#7c2d12">heat out (4–7 units)</text>
+              </svg>
+            </div>
+            <div class="text-sm text-slate-700 space-y-2">
+              <p>An aircon doesn't <em>create</em> cold &mdash; it <strong>moves heat</strong> from inside to outside, using a refrigerant that boils and condenses at convenient temperatures.</p>
+              <p>The compressor is the only major energy consumer. It spends 1 unit of electrical energy to <em>pump</em> 3–6 units of heat out of your home. That's why COP can exceed 1 (a heater can't &mdash; it converts electricity 1:1).</p>
+              <p>Higher COP = better refrigerant, larger heat exchangers, smarter controls.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- COP / IEER / TICKS -->
+        <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-6">
+          <h2 class="text-xl font-bold text-slate-900 mb-3">COP, IEER, and Ticks</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+            <div class="bg-teal-50 ring-1 ring-teal-200 rounded-lg p-4">
+              <p class="text-xs uppercase tracking-wide text-teal-700 font-semibold">Full-load COP</p>
+              <p class="text-sm text-slate-700 mt-2">Cooling ÷ Electricity at <strong>100% rated capacity</strong>. Useful when the unit is hammering away at peak load (rare in practice).</p>
+            </div>
+            <div class="bg-teal-50 ring-1 ring-teal-200 rounded-lg p-4">
+              <p class="text-xs uppercase tracking-wide text-teal-700 font-semibold">Weighted / Part-load COP</p>
+              <p class="text-sm text-slate-700 mt-2">A blended figure that gives more weight to <strong>part-load operation</strong>. Most relevant for residential use where the compressor cycles or modulates.</p>
+            </div>
+            <div class="bg-teal-50 ring-1 ring-teal-200 rounded-lg p-4">
+              <p class="text-xs uppercase tracking-wide text-teal-700 font-semibold">IEER (3-phase)</p>
+              <p class="text-sm text-slate-700 mt-2">Same idea as Weighted COP, but explicitly weights performance at <strong>25/50/75/100%</strong> load. Used for VRV/VRF and commercial systems.</p>
+            </div>
+          </div>
+
+          <h3 class="font-semibold text-slate-900 mt-4 mb-2">Ticks (the green stars)</h3>
+          <p class="text-sm text-slate-700 mb-2">NEA's Energy Labelling Scheme rates aircons 1–5 ticks based on Weighted COP bands:</p>
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+              <thead>
+                <tr class="text-left text-slate-500 border-b border-slate-200">
+                  <th class="py-2 pr-4 font-medium">Ticks</th>
+                  <th class="py-2 pr-4 font-medium">Weighted COP (typical)</th>
+                  <th class="py-2 pr-0 font-medium">What it means</th>
+                </tr>
+              </thead>
+              <tbody class="[&amp;>tr]:border-b [&amp;>tr]:border-slate-100 [&amp;>tr>td]:py-2 [&amp;>tr>td]:pr-4 [&amp;>tr>td]:align-top">
+                <tr><td><span class="text-rose-600 font-semibold">★</span></td><td>~3.0</td><td>Old non-inverter, basic units. Cheapest upfront, expensive to run.</td></tr>
+                <tr><td><span class="text-orange-600 font-semibold">★★</span></td><td>~3.4</td><td>Entry-level inverter. Common in older HDB units.</td></tr>
+                <tr><td><span class="text-slate-400 font-semibold">★★★</span></td><td>—</td><td><em>Unused</em> in NEA's current scheme.</td></tr>
+                <tr><td><span class="text-emerald-600 font-semibold">★★★★</span></td><td>~4.7</td><td>Mid-range modern inverter. Sweet spot for most renovations.</td></tr>
+                <tr><td><span class="text-emerald-700 font-semibold">★★★★★</span></td><td>~5.5</td><td>Top-end inverter. Premium price, best running cost.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- INVERTER -->
+        <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-6">
+          <h2 class="text-xl font-bold text-slate-900 mb-3">Inverter vs non-inverter</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-50 ring-1 ring-slate-200 rounded-lg p-4">
+              <h3 class="font-semibold text-slate-900 mb-2">Non-inverter</h3>
+              <ul class="text-sm text-slate-700 list-disc list-inside space-y-1">
+                <li>Compressor runs <strong>full speed or off</strong>. Cycles repeatedly.</li>
+                <li>Each restart wastes energy and stresses the compressor.</li>
+                <li>Temperature swings ±2&deg;C around the setpoint.</li>
+                <li>Cheaper to manufacture; cheaper upfront.</li>
+                <li>Most 1★/2★ units.</li>
+              </ul>
+            </div>
+            <div class="bg-teal-50 ring-1 ring-teal-200 rounded-lg p-4">
+              <h3 class="font-semibold text-teal-900 mb-2">Inverter</h3>
+              <ul class="text-sm text-teal-900 list-disc list-inside space-y-1">
+                <li>Compressor speed <strong>varies smoothly</strong> with cooling demand.</li>
+                <li>Once at setpoint, runs at low power instead of stopping.</li>
+                <li>Tighter temperature control (±0.5&deg;C); quieter.</li>
+                <li>20–40% energy savings vs equivalent non-inverter at same hours.</li>
+                <li>All modern 4★/5★ units; most 2★ units.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- SYSTEM TYPES -->
+        <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-6">
+          <h2 class="text-xl font-bold text-slate-900 mb-3">Single-split, multi-split, and VRV</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-slate-50 ring-1 ring-slate-200 rounded-lg p-4">
+              <h3 class="font-semibold text-slate-900 mb-2">Single-split (1:1)</h3>
+              <p class="text-sm text-slate-700">One outdoor unit per indoor unit. Highest published COP per pair, but you need ledge space for N outdoor units in an N-room home.</p>
+              <p class="text-xs text-slate-500 mt-2">Typical for: 1-room studio, master-only setups, larger landed where each room has good outdoor access.</p>
+            </div>
+            <div class="bg-teal-50 ring-1 ring-teal-200 rounded-lg p-4">
+              <h3 class="font-semibold text-teal-900 mb-2">Multi-split (1 outdoor : N indoor)</h3>
+              <p class="text-sm text-teal-900">One bigger outdoor unit drives 2–5 indoor heads &mdash; the typical SG "system" (2-system, 3-system, 4-system…). Single ledge footprint.</p>
+              <p class="text-xs text-slate-500 mt-2">Real-world COP is usually <strong>~10% lower</strong> than the single-split rating because of partial load and longer refrigerant runs.</p>
+            </div>
+            <div class="bg-amber-50 ring-1 ring-amber-200 rounded-lg p-4">
+              <h3 class="font-semibold text-amber-900 mb-2">VRV / VRF (3-phase)</h3>
+              <p class="text-sm text-amber-900">Variable Refrigerant Volume systems. One large outdoor unit drives many indoor heads with independent control. Common in landed homes, penthouses, offices.</p>
+              <p class="text-xs text-slate-500 mt-2">Rated by IEER instead of Weighted COP. Higher upfront, often higher install complexity, but very efficient at part load.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SIZING -->
+        <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-6">
+          <h2 class="text-xl font-bold text-slate-900 mb-3">Quick sizing guide (Singapore)</h2>
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+              <thead>
+                <tr class="text-left text-slate-500 border-b border-slate-200">
+                  <th class="py-2 pr-4 font-medium">Room</th>
+                  <th class="py-2 pr-4 font-medium">Floor area</th>
+                  <th class="py-2 pr-4 font-medium">BTU/h</th>
+                  <th class="py-2 pr-0 font-medium">Cooling kW</th>
+                </tr>
+              </thead>
+              <tbody class="[&amp;>tr]:border-b [&amp;>tr]:border-slate-100 [&amp;>tr>td]:py-2 [&amp;>tr>td]:pr-4">
+                <tr><td>Bedroom (BR)</td><td>~10 m²</td><td>9,000</td><td>2.6</td></tr>
+                <tr><td>Master bedroom</td><td>~14 m²</td><td>12,000</td><td>3.5</td></tr>
+                <tr><td>Living / dining</td><td>~20 m²</td><td>18,000</td><td>5.0</td></tr>
+                <tr><td>Large living / open plan</td><td>~28 m²</td><td>24,000</td><td>7.0</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="text-xs text-slate-500 mt-2">
+            Rule of thumb: ~600 BTU/h per m² in Singapore (high humidity adds latent load). Slightly oversize for west-facing rooms with afternoon sun; don't over-oversize or you lose dehumidification.
+          </p>
+        </section>
+
+        <footer class="text-xs text-slate-500 leading-relaxed mt-6">
+          <p>
+            For the actual NEA-rated specs of every model on sale today, see <a class="text-teal-600 hover:underline" href="models.html">Models</a>.
+          </p>
+        </footer>
+
+      </main>
+    </div>
+  </div>
+  <script src="/assets/nav.js"></script>
+</body>
+</html>

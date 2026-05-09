@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Aircon ROI — Methodology</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    pre.formula {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 13px;
+      line-height: 1.6;
+      overflow-x: auto;
+      color: #0f172a;
+    }
+    code.var {
+      background: #f0fdfa;
+      color: #0f766e;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 0.92em;
+    }
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      background: #0d9488;
+      color: white;
+      font-weight: 600;
+      font-size: 14px;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+  <header class="md:hidden flex items-center gap-3 px-4 py-3 bg-white border-b border-slate-200 sticky top-0 z-20">
+    <button id="navToggle" class="p-1 rounded hover:bg-slate-100" aria-label="Toggle navigation">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <span class="font-semibold text-slate-900">ROI Tools</span>
+  </header>
+  <div id="navBackdrop" class="hidden fixed inset-0 bg-slate-900/40 z-30 md:hidden"></div>
+  <div class="md:flex">
+    <aside id="sidebar"
+      class="fixed md:sticky top-0 left-0 z-40 w-64 h-screen bg-white border-r border-slate-200 overflow-y-auto -translate-x-full md:translate-x-0 transition-transform duration-200 md:transition-none"></aside>
+    <div class="flex-1 min-w-0">
+      <nav id="subtabs" class="bg-white border-b border-slate-200 md:sticky md:top-0 z-10"></nav>
+      <main class="max-w-5xl mx-auto px-4 py-6 sm:py-8">
+
+        <header class="mb-8">
+          <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">Aircon Calculator — Methodology</h1>
+          <p class="text-sm sm:text-base text-slate-600 mt-1">
+            Every formula and assumption the aircon ROI calculator uses, in the order it fires.
+          </p>
+        </header>
+
+        <!-- TL;DR -->
+        <section class="bg-amber-50 ring-1 ring-amber-200 rounded-2xl p-5 sm:p-6 mb-8 text-sm text-amber-900">
+          <h2 class="text-base font-semibold mb-2">In one paragraph</h2>
+          <p>
+            For each <strong>room</strong>, we compute the cooling energy delivered per year from your
+            capacity × hours × days × load factor. We divide that by each option's effective <strong>COP</strong>
+            (or <strong>IEER</strong> for 3-phase) to get electricity drawn from the wall. Multiply by tariff
+            (with annual escalation and GST) to get yearly cost. The savings between Option A and Option B,
+            accumulated year-by-year, hit the upfront cost difference at the <strong>break-even year</strong>.
+          </p>
+        </section>
+
+        <!-- INPUTS -->
+        <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-6">
+          <h2 class="text-xl font-bold text-slate-900 mb-4">Inputs</h2>
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+              <thead>
+                <tr class="text-left text-slate-500 border-b border-slate-200">
+                  <th class="py-2 pr-4 font-medium">Variable</th>
+                  <th class="py-2 pr-4 font-medium">Symbol</th>
+                  <th class="py-2 pr-0 font-medium">Default</th>
+                </tr>
+              </thead>
+              <tbody class="[&amp;>tr]:border-b [&amp;>tr]:border-slate-100 [&amp;>tr>td]:py-2 [&amp;>tr>td]:pr-4">
+                <tr><td>Per-room cooling capacity (kW)</td><td><code class="var">cap<sub>i</sub></code></td><td>BR 2.6 / Master 3.5 / Living 5.0</td></tr>
+                <tr><td>Per-room hours per day</td><td><code class="var">h<sub>i</sub></code></td><td>BR 8 / Master 9 / Living 4</td></tr>
+                <tr><td>Per-room days per year</td><td><code class="var">d<sub>i</sub></code></td><td>350</td></tr>
+                <tr><td>Inverter load factor</td><td><code class="var">α</code></td><td>0.65</td></tr>
+                <tr><td>Diversity factor (system-wide)</td><td><code class="var">δ</code></td><td>0.7</td></tr>
+                <tr><td>Multi-split COP penalty</td><td><code class="var">π</code></td><td>10%</td></tr>
+                <tr><td>Existing aircon COP degradation per year</td><td><code class="var">θ</code></td><td>1%/yr</td></tr>
+                <tr><td>Option's nominal Weighted COP / IEER</td><td><code class="var">COP</code></td><td>(per option)</td></tr>
+                <tr><td>Option's age (years)</td><td><code class="var">a</code></td><td>(per option)</td></tr>
+                <tr><td>Electricity tariff (SGD/kWh, before GST)</td><td><code class="var">P</code></td><td>0.2727</td></tr>
+                <tr><td>Annual tariff escalation</td><td><code class="var">r</code></td><td>0.03</td></tr>
+                <tr><td>GST</td><td><code class="var">g</code></td><td>0.09</td></tr>
+                <tr><td>Lifespan horizon (years)</td><td><code class="var">L</code></td><td>10</td></tr>
+                <tr><td>Per-option upfront: price + install − rebate − salvage</td><td><code class="var">U<sub>A</sub></code>, <code class="var">U<sub>B</sub></code></td><td>(per option)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- STEP 1 -->
+        <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-6">
+          <h2 class="text-lg font-bold text-slate-900 mb-3"><span class="step-num">1</span>Cooling demand per year</h2>
+          <p class="text-sm text-slate-700 mb-3">
+            Sum of per-room capacity × hours × days, scaled by load factor and diversity. Load factor
+            captures the fact that an inverter compressor rarely runs at 100% of nameplate; diversity
+            captures the fact that not all rooms run simultaneously.
+          </p>
+          <pre class="formula">Q = α × δ × Σ<sub>i</sub> (cap<sub>i</sub> × h<sub>i</sub> × d<sub>i</sub>)         [kWh-cooling / year]</pre>
+          <p class="text-xs text-slate-500 mt-2">
+            Default 3-system (Living + Master + BR), 350 days, α=0.65, δ=0.7:
+            Q = 0.65 × 0.7 × (5.0×4 + 3.5×9 + 2.6×8) × 350 ≈ <strong>11,790 kWh-cooling/yr</strong>.
+          </p>
+        </section>
+
+        <!-- STEP 2 -->
+        <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-6">
+          <h2 class="text-lg font-bold text-slate-900 mb-3"><span class="step-num">2</span>Effective COP per option</h2>
+          <p class="text-sm text-slate-700 mb-3">
+            Start from the option's nominal Weighted COP (1-phase) or IEER (3-phase), then apply two adjustments:
+          </p>
+          <pre class="formula">COP<sub>eff</sub> = COP<sub>nominal</sub> × (1 − π if multi/vrf else 1) × (1 − θ)<sup>a</sup></pre>
+          <ul class="text-xs text-slate-500 mt-2 list-disc list-inside space-y-0.5">
+            <li>The <strong>multi-split penalty</strong> π reflects matched-system COP loss vs the single-split rating.</li>
+            <li>The <strong>degradation</strong> θ<sup>a</sup> term applies when an existing aircon has age &gt; 0.</li>
+            <li>For 3-phase VRV, IEER is the part-load-weighted efficiency &mdash; we treat it identically to Weighted COP for energy estimation.</li>
+          </ul>
+        </section>
+
+        <!-- STEP 3 -->
+        <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-6">
+          <h2 class="text-lg font-bold text-slate-900 mb-3"><span class="step-num">3</span>Annual electricity drawn</h2>
+          <pre class="formula">E = Q ÷ COP<sub>eff</sub>          [kWh-electricity / year]</pre>
+          <p class="text-xs text-slate-500 mt-2">
+            Done independently for Option A and Option B. <code class="var">E<sub>A</sub></code>, <code class="var">E<sub>B</sub></code>.
+          </p>
+        </section>
+
+        <!-- STEP 4 -->
+        <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-6">
+          <h2 class="text-lg font-bold text-slate-900 mb-3"><span class="step-num">4</span>Year-N tariffs &amp; annual cost</h2>
+          <pre class="formula">P(N)         = P × (1 + r)<sup>N−1</sup> × (1 + g)
+Cost<sub>A</sub>(N)    = E<sub>A</sub> × P(N)
+Cost<sub>B</sub>(N)    = E<sub>B</sub> × P(N)
+Savings(N)   = Cost<sub>A</sub>(N) − Cost<sub>B</sub>(N)</pre>
+        </section>
+
+        <!-- STEP 5 -->
+        <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-6">
+          <h2 class="text-lg font-bold text-slate-900 mb-3"><span class="step-num">5</span>Net upfront, cumulative savings, break-even</h2>
+          <pre class="formula">U<sub>A</sub>     = price<sub>A</sub> + install<sub>A</sub> − rebate<sub>A</sub> − salvage<sub>A</sub>
+U<sub>B</sub>     = price<sub>B</sub> + install<sub>B</sub> − rebate<sub>B</sub> − salvage<sub>B</sub>
+Net    = U<sub>B</sub> − U<sub>A</sub>                          [extra you pay to switch to B]
+
+Cum(N) = Σ<sub>k=1..N</sub> Savings(k)
+Net pos(N) = Cum(N) − Net
+
+Break-even year = first N where Cum(N) ≥ Net</pre>
+          <p class="text-xs text-slate-500 mt-2">
+            We refine the break-even with linear interpolation inside that year so the headline reads
+            as a fractional year (e.g. "4.2 yrs"). Special results: Net ≤ 0 → "already paid back";
+            Savings(1) ≤ 0 → "no payback"; doesn't break even within the lifespan horizon → "&gt; L yrs".
+          </p>
+        </section>
+
+        <!-- DATA NOTES -->
+        <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-6">
+          <h2 class="text-xl font-bold text-slate-900 mb-3">Notes on the NEA dataset</h2>
+          <ul class="text-sm text-slate-700 list-disc list-inside space-y-1">
+            <li>The <strong>Weighted COP</strong> column blends full-load and part-load efficiency &mdash;
+              it's a more realistic real-world figure than full-load COP alone.</li>
+            <li>The <strong>Annual Energy Consumption (kWh)</strong> column NEA publishes assumes a fixed
+              standard test usage profile, not yours. We <em>ignore</em> it and compute energy directly
+              from your capacity, hours, and COP.</li>
+            <li><strong>3-phase</strong> entries report <strong>IEER</strong> (Integrated Energy Efficiency
+              Ratio) instead. IEER weights performance at 25/50/75/100% load &mdash; structurally the same
+              role as Weighted COP for a yearly energy estimate.</li>
+            <li>The <strong>tick band</strong> 1, 2, 4, 5 maps directly to NEA's current scheme
+              (3 ticks is unused under the active labelling rules).</li>
+          </ul>
+        </section>
+
+        <!-- ASSUMPTIONS -->
+        <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-6">
+          <h2 class="text-xl font-bold text-slate-900 mb-3">Assumptions &amp; Limitations</h2>
+          <ul class="text-sm text-slate-700 list-disc list-inside space-y-1">
+            <li><strong>Constant load factor.</strong> α=0.65 is a single number for the whole year; real
+              cycling depends on outdoor heat load (peak afternoon &gt;&gt; nighttime).</li>
+            <li><strong>Diversity is system-wide.</strong> δ multiplies the whole sum &mdash; it doesn't model
+              "kids' bedroom always on, study sometimes" non-uniform diversity.</li>
+            <li><strong>Constant COP.</strong> COP rated at 27°C indoor / 35°C outdoor; SG runs hotter at
+              peak so real COP can drop. We don't model thermal lift derating.</li>
+            <li><strong>Tariffs compound annually</strong> at a constant rate; real tariffs revise quarterly.</li>
+            <li><strong>No ambient-temperature seasonality.</strong> SG is roughly constant year-round so
+              this is acceptable; not transferable to non-tropical climates without changes.</li>
+            <li><strong>Servicing cost not included.</strong> Both options are assumed to incur similar
+              annual maintenance; if a 5★ inverter has higher servicing cost, fold it into "install" up-front.</li>
+            <li><strong>30-day months / fractional break-even via linear interpolation.</strong> Good to
+              ~1 month of error.</li>
+          </ul>
+        </section>
+
+        <footer class="text-xs text-slate-500 leading-relaxed">
+          <p>
+            Source for aircon specs: <a class="text-teal-600 hover:underline" href="https://www.nea.gov.sg/our-services/climate-change-energy-efficiency/energy-efficiency/household-sector/energy-labelling-scheme" target="_blank" rel="noopener">NEA Energy Labelling Scheme</a>.
+            Workbook snapshots ship with this repo under <code>aircon/data/</code>.
+          </p>
+        </footer>
+
+      </main>
+    </div>
+  </div>
+  <script src="/assets/nav.js"></script>
+</body>
+</html>

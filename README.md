@@ -15,10 +15,10 @@ of pages — no per-page nav edits.
 
 ## Calculators
 
-| Slug          | Status        | What it does                                                |
-| ------------- | ------------- | ----------------------------------------------------------- |
-| `water-heater`| Live          | Gas vs. electric water heater, with payback period.         |
-| `aircon`      | Coming soon   | Replacement ROI for older aircon units (placeholder stub).  |
+| Slug          | Status | What it does                                                              |
+| ------------- | ------ | ------------------------------------------------------------------------- |
+| `water-heater`| Live   | Gas vs. electric water heater, with payback period.                       |
+| `aircon`      | Live   | Side-by-side Option A vs B with NEA model picker, rooms builder, ROI.     |
 
 ## Folder structure
 
@@ -38,7 +38,15 @@ of pages — no per-page nav edits.
 │       ├── Historical Electricity Tariff.xlsx
 │       └── Historical-Town-Gas-Tariffs_from_2007-to-2026-June.xlsx
 ├── aircon/
-│   └── index.html               # "coming soon" stub
+│   ├── index.html               # Option A vs B calculator
+│   ├── models.html              # NEA registry browser (filterable, sortable)
+│   ├── methodology.html         # formulas + worked example
+│   ├── learn.html               # COP / IEER / inverter / system types
+│   ├── faq.html                 # common questions
+│   └── data/
+│       ├── aircon-data.js       # extracted NEA records (single + 3-phase)
+│       ├── NEA_ELS_Air_Conditioner_*.xlsx
+│       └── NEA_ELS_AirConditioner(3-Phase)_*.xlsx
 └── README.md
 ```
 

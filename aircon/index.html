@@ -3,8 +3,15 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Aircon Replacement ROI — Coming Soon</title>
+  <title>Aircon ROI Calculator</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="data/aircon-data.js"></script>
+  <style>
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type="number"] { -moz-appearance: textfield; }
+    .opt-input { @apply w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none px-2 py-1 text-sm; }
+  </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen">
   <header class="md:hidden flex items-center gap-3 px-4 py-3 bg-white border-b border-slate-200 sticky top-0 z-20">
@@ -19,17 +26,570 @@
       class="fixed md:sticky top-0 left-0 z-40 w-64 h-screen bg-white border-r border-slate-200 overflow-y-auto -translate-x-full md:translate-x-0 transition-transform duration-200 md:transition-none"></aside>
     <div class="flex-1 min-w-0">
       <nav id="subtabs" class="bg-white border-b border-slate-200 md:sticky md:top-0 z-10"></nav>
-      <main class="max-w-5xl mx-auto px-4 py-12 sm:py-20 text-center">
-        <span class="text-5xl">❄</span>
-        <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 mt-4">Aircon Replacement ROI</h1>
-        <p class="text-sm sm:text-base text-slate-600 mt-2 max-w-xl mx-auto">
-          Coming soon. The plan is to compare older units (typical 3-tick) against new 5-tick inverter
-          models &mdash; energy savings, payback period, and Climate Voucher / rebate eligibility.
-        </p>
-        <a href="/" class="inline-block mt-6 text-sm text-teal-600 hover:underline">&larr; Back to all calculators</a>
+      <main class="max-w-6xl mx-auto px-4 py-6 sm:py-8">
+
+        <header class="mb-6">
+          <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">Aircon Switcher ROI</h1>
+          <p class="text-sm sm:text-base text-slate-600 mt-1">
+            Compare two aircon configurations side-by-side &mdash; works for upgrades (existing vs new)
+            or fresh purchases (e.g. 4-tick vs 5-tick). Browse the
+            <a href="models.html" class="text-teal-600 hover:underline">NEA model registry</a> to load specs in.
+          </p>
+        </header>
+
+        <!-- ROOMS / SYSTEM -->
+        <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-4">
+          <div class="flex items-baseline justify-between mb-3 flex-wrap gap-2">
+            <h2 class="text-lg font-semibold text-slate-900">Rooms / System Configuration</h2>
+            <div class="flex items-center gap-2 text-sm">
+              <span class="text-slate-500">Quick set:</span>
+              <button data-preset="1" class="preset px-2 py-1 rounded ring-1 ring-slate-200 hover:bg-slate-50">1-system</button>
+              <button data-preset="2" class="preset px-2 py-1 rounded ring-1 ring-slate-200 hover:bg-slate-50">2-system</button>
+              <button data-preset="3" class="preset px-2 py-1 rounded ring-1 ring-slate-200 hover:bg-slate-50">3-system</button>
+              <button data-preset="4" class="preset px-2 py-1 rounded ring-1 ring-slate-200 hover:bg-slate-50">4-system</button>
+              <button data-preset="5" class="preset px-2 py-1 rounded ring-1 ring-slate-200 hover:bg-slate-50">5-system</button>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+              <thead class="text-xs uppercase tracking-wide text-slate-500">
+                <tr>
+                  <th class="text-left pb-2 pr-3">Room</th>
+                  <th class="text-left pb-2 pr-3">Capacity (kW)</th>
+                  <th class="text-left pb-2 pr-3 text-slate-400 font-normal">≈ BTU/h</th>
+                  <th class="text-left pb-2 pr-3">Hours / day</th>
+                  <th class="text-left pb-2 pr-3">Days / yr</th>
+                  <th class="pb-2"></th>
+                </tr>
+              </thead>
+              <tbody id="roomsBody" class="[&amp;>tr>td]:py-1.5 [&amp;>tr>td]:pr-3 [&amp;>tr>td>input]:w-full [&amp;>tr>td>select]:w-full"></tbody>
+            </table>
+          </div>
+          <button id="addRoom" class="mt-3 text-sm text-teal-600 hover:underline">+ Add room</button>
+        </section>
+
+        <!-- OPTIONS A vs B -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <!-- Option A -->
+          <div class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6">
+            <div class="flex items-baseline justify-between mb-3">
+              <h2 class="text-lg font-semibold text-slate-900">
+                <span class="inline-block w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-center text-sm font-bold leading-6 mr-1">A</span>
+                Existing / Baseline
+              </h2>
+            </div>
+            <div class="space-y-3" data-opt="A">
+              <label class="block">
+                <span class="text-xs font-medium text-slate-700">Pick from NEA list</span>
+                <select class="opt-model mt-1 block w-full rounded-md ring-1 ring-slate-200 px-2 py-1.5 text-sm bg-white">
+                  <option value="">— enter custom specs below —</option>
+                </select>
+              </label>
+              <div class="grid grid-cols-2 gap-2">
+                <label class="block">
+                  <span class="text-xs font-medium text-slate-700">Star ticks</span>
+                  <select class="opt-ticks mt-1 block w-full rounded-md ring-1 ring-slate-200 px-2 py-1.5 text-sm bg-white">
+                    <option value="0">Custom COP</option>
+                    <option value="1">1★</option><option value="2">2★</option><option value="3">3★</option>
+                    <option value="4">4★</option><option value="5">5★</option>
+                  </select>
+                </label>
+                <label class="block">
+                  <span class="text-xs font-medium text-slate-700">Weighted COP / IEER</span>
+                  <input class="opt-cop mt-1 block w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" type="number" step="0.01" min="1" value="3.4" />
+                </label>
+              </div>
+              <label class="block">
+                <span class="text-xs font-medium text-slate-700">System type</span>
+                <select class="opt-type mt-1 block w-full rounded-md ring-1 ring-slate-200 px-2 py-1.5 text-sm bg-white">
+                  <option value="single">Single Split (1 outdoor → 1 indoor)</option>
+                  <option value="multi" selected>Multi Split (1 outdoor → multiple indoor)</option>
+                  <option value="vrf">3-phase VRV/VRF</option>
+                </select>
+              </label>
+              <div class="grid grid-cols-2 gap-2">
+                <label class="block">
+                  <span class="text-xs font-medium text-slate-700">Age (years)</span>
+                  <input class="opt-age mt-1 block w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" type="number" step="1" min="0" value="8" />
+                </label>
+                <label class="block">
+                  <span class="text-xs font-medium text-slate-700">Salvage value (SGD)</span>
+                  <input class="opt-salvage mt-1 block w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" type="number" step="10" min="0" value="0" />
+                </label>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <label class="block">
+                  <span class="text-xs font-medium text-slate-700">Unit price (SGD)</span>
+                  <input class="opt-price mt-1 block w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" type="number" step="50" min="0" value="0" />
+                </label>
+                <label class="block">
+                  <span class="text-xs font-medium text-slate-700">Install cost (SGD)</span>
+                  <input class="opt-install mt-1 block w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" type="number" step="50" min="0" value="0" />
+                </label>
+              </div>
+              <label class="block">
+                <span class="text-xs font-medium text-slate-700">Rebate / Climate Voucher (SGD)</span>
+                <input class="opt-rebate mt-1 block w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" type="number" step="50" min="0" value="0" />
+              </label>
+            </div>
+          </div>
+
+          <!-- Option B -->
+          <div class="bg-white rounded-2xl shadow-sm ring-1 ring-teal-200 p-5 sm:p-6">
+            <div class="flex items-baseline justify-between mb-3">
+              <h2 class="text-lg font-semibold text-slate-900">
+                <span class="inline-block w-6 h-6 rounded-full bg-teal-100 text-teal-700 text-center text-sm font-bold leading-6 mr-1">B</span>
+                New / Proposed
+              </h2>
+            </div>
+            <div class="space-y-3" data-opt="B">
+              <label class="block">
+                <span class="text-xs font-medium text-slate-700">Pick from NEA list</span>
+                <select class="opt-model mt-1 block w-full rounded-md ring-1 ring-slate-200 px-2 py-1.5 text-sm bg-white">
+                  <option value="">— enter custom specs below —</option>
+                </select>
+              </label>
+              <div class="grid grid-cols-2 gap-2">
+                <label class="block">
+                  <span class="text-xs font-medium text-slate-700">Star ticks</span>
+                  <select class="opt-ticks mt-1 block w-full rounded-md ring-1 ring-slate-200 px-2 py-1.5 text-sm bg-white">
+                    <option value="0">Custom COP</option>
+                    <option value="1">1★</option><option value="2">2★</option><option value="3">3★</option>
+                    <option value="4">4★</option><option value="5" selected>5★</option>
+                  </select>
+                </label>
+                <label class="block">
+                  <span class="text-xs font-medium text-slate-700">Weighted COP / IEER</span>
+                  <input class="opt-cop mt-1 block w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" type="number" step="0.01" min="1" value="5.5" />
+                </label>
+              </div>
+              <label class="block">
+                <span class="text-xs font-medium text-slate-700">System type</span>
+                <select class="opt-type mt-1 block w-full rounded-md ring-1 ring-slate-200 px-2 py-1.5 text-sm bg-white">
+                  <option value="single">Single Split (1 outdoor → 1 indoor)</option>
+                  <option value="multi" selected>Multi Split (1 outdoor → multiple indoor)</option>
+                  <option value="vrf">3-phase VRV/VRF</option>
+                </select>
+              </label>
+              <div class="grid grid-cols-2 gap-2">
+                <label class="block">
+                  <span class="text-xs font-medium text-slate-700">Age (years)</span>
+                  <input class="opt-age mt-1 block w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" type="number" step="1" min="0" value="0" />
+                </label>
+                <label class="block">
+                  <span class="text-xs font-medium text-slate-700">Salvage value (SGD)</span>
+                  <input class="opt-salvage mt-1 block w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" type="number" step="10" min="0" value="0" />
+                </label>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <label class="block">
+                  <span class="text-xs font-medium text-slate-700">Unit price (SGD)</span>
+                  <input class="opt-price mt-1 block w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" type="number" step="50" min="0" value="3500" />
+                </label>
+                <label class="block">
+                  <span class="text-xs font-medium text-slate-700">Install cost (SGD)</span>
+                  <input class="opt-install mt-1 block w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" type="number" step="50" min="0" value="1200" />
+                </label>
+              </div>
+              <label class="block">
+                <span class="text-xs font-medium text-slate-700">Rebate / Climate Voucher (SGD)</span>
+                <input class="opt-rebate mt-1 block w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" type="number" step="50" min="0" value="300" />
+              </label>
+            </div>
+          </div>
+        </section>
+
+        <!-- SHARED ASSUMPTIONS -->
+        <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-4">
+          <h2 class="text-lg font-semibold text-slate-900 mb-3">Tariffs &amp; Assumptions (shared)</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <label class="block">
+              <span class="text-xs font-medium text-slate-700">Electricity tariff (SGD/kWh, before GST)</span>
+              <input id="elecTariff" type="number" step="0.0001" min="0" value="0.2727"
+                class="mt-1 w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" />
+            </label>
+            <label class="block">
+              <span class="text-xs font-medium text-slate-700">Annual tariff increase (%)</span>
+              <input id="elecIncrease" type="number" step="0.1" min="0" value="3"
+                class="mt-1 w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" />
+            </label>
+            <label class="block">
+              <span class="text-xs font-medium text-slate-700">GST (%)</span>
+              <input id="gst" type="number" step="0.1" min="0" max="20" value="9"
+                class="mt-1 w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" />
+            </label>
+            <label class="block">
+              <span class="text-xs font-medium text-slate-700">Inverter load factor (0–1)</span>
+              <input id="loadFactor" type="number" step="0.05" min="0.1" max="1" value="0.65"
+                class="mt-1 w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" />
+            </label>
+            <label class="block">
+              <span class="text-xs font-medium text-slate-700">Diversity factor (0–1)</span>
+              <input id="diversity" type="number" step="0.05" min="0.1" max="1" value="0.7"
+                class="mt-1 w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" />
+            </label>
+            <label class="block">
+              <span class="text-xs font-medium text-slate-700">Multi-split COP penalty (%)</span>
+              <input id="multiPenalty" type="number" step="1" min="0" max="50" value="10"
+                class="mt-1 w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" />
+            </label>
+            <label class="block">
+              <span class="text-xs font-medium text-slate-700">Existing-aircon COP degradation (%/yr)</span>
+              <input id="degradation" type="number" step="0.1" min="0" max="5" value="1"
+                class="mt-1 w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" />
+            </label>
+            <label class="block">
+              <span class="text-xs font-medium text-slate-700">Lifespan horizon (years)</span>
+              <input id="lifespan" type="number" step="1" min="3" max="20" value="10"
+                class="mt-1 w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" />
+            </label>
+          </div>
+        </section>
+
+        <!-- RESULTS -->
+        <section class="bg-gradient-to-br from-teal-600 to-teal-800 text-white rounded-2xl shadow-lg p-5 sm:p-7 mb-4">
+          <h2 class="text-sm font-semibold uppercase tracking-wide text-teal-200 mb-2">Results</h2>
+          <div class="mb-4">
+            <p class="text-teal-100 text-sm">Payback Period</p>
+            <p id="payback" class="text-3xl sm:text-4xl font-bold">— yrs</p>
+            <p id="paybackLabel" class="text-teal-100 text-sm mt-1">—</p>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div class="bg-white/10 rounded-lg p-3">
+              <p class="text-xs uppercase tracking-wide text-teal-200">Net upfront</p>
+              <p id="netUpfront" class="text-base font-semibold mt-0.5">—</p>
+            </div>
+            <div class="bg-white/10 rounded-lg p-3">
+              <p class="text-xs uppercase tracking-wide text-teal-200">Year-1 savings</p>
+              <p id="year1Save" class="text-base font-semibold mt-0.5">—</p>
+            </div>
+            <div class="bg-white/10 rounded-lg p-3">
+              <p class="text-xs uppercase tracking-wide text-teal-200">A annual energy</p>
+              <p id="aKwh" class="text-base font-semibold mt-0.5">—</p>
+            </div>
+            <div class="bg-white/10 rounded-lg p-3">
+              <p class="text-xs uppercase tracking-wide text-teal-200">B annual energy</p>
+              <p id="bKwh" class="text-base font-semibold mt-0.5">—</p>
+            </div>
+          </div>
+          <div id="resultsMessage" class="hidden mt-3 bg-amber-100 text-amber-900 rounded-lg p-3 text-sm"></div>
+        </section>
+
+        <!-- TABLE -->
+        <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-4">
+          <h2 class="text-lg font-semibold text-slate-900 mb-3">Year-by-Year Projection</h2>
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+              <thead>
+                <tr class="text-left text-slate-500 border-b border-slate-200">
+                  <th class="py-2 pr-4 font-medium">Year</th>
+                  <th class="py-2 pr-4 font-medium">A cost</th>
+                  <th class="py-2 pr-4 font-medium">B cost</th>
+                  <th class="py-2 pr-4 font-medium">Savings (B vs A)</th>
+                  <th class="py-2 pr-4 font-medium">Cumulative</th>
+                  <th class="py-2 pr-0 font-medium">Net position</th>
+                </tr>
+              </thead>
+              <tbody id="projectionBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <footer class="text-xs text-slate-500 leading-relaxed">
+          <p>
+            Source for model specs: <a class="text-teal-600 hover:underline" href="https://www.nea.gov.sg/our-services/climate-change-energy-efficiency/energy-efficiency/household-sector/energy-labelling-scheme" target="_blank" rel="noopener">NEA Energy Labelling Scheme</a>.
+            Computed energy use depends heavily on hours, load factor, and ambient conditions; see
+            <a href="methodology.html" class="text-teal-600 hover:underline">Methodology</a> for the full formula.
+          </p>
+        </footer>
+
       </main>
     </div>
   </div>
+
   <script src="/assets/nav.js"></script>
+  <script>
+    'use strict';
+    const fmtSGD = new Intl.NumberFormat('en-SG', { style: 'currency', currency: 'SGD', maximumFractionDigits: 0 });
+    const fmtN = new Intl.NumberFormat('en-SG', { maximumFractionDigits: 0 });
+    const $ = id => document.getElementById(id);
+
+    // Median wCop per tick (computed once for "tick preset" mode)
+    const TICK_MEDIANS = (() => {
+      const buckets = {};
+      for (const r of window.AIRCON_SINGLE) {
+        if (!r.ticks || !r.wCop) continue;
+        (buckets[r.ticks] ||= []).push(r.wCop);
+      }
+      const med = {};
+      for (const k in buckets) {
+        const arr = buckets[k].sort((a, b) => a - b);
+        med[k] = arr[Math.floor(arr.length / 2)];
+      }
+      // 3-tick band is unused in NEA's current scheme — interpolate so users can pick it
+      if (!med[3] && med[2] && med[4]) med[3] = (med[2] + med[4]) / 2;
+      return med;
+    })();
+
+    // ---- ROOMS ----
+    const ROOM_PRESETS = {
+      'Master BR':  { capacity: 3.5, hoursDay: 9 },
+      'Bedroom':    { capacity: 2.6, hoursDay: 8 },
+      'Living':     { capacity: 5.0, hoursDay: 4 },
+      'Study':      { capacity: 2.6, hoursDay: 3 },
+      'Kitchen':    { capacity: 2.6, hoursDay: 2 },
+      'Custom':     { capacity: 2.6, hoursDay: 6 }
+    };
+
+    const SYSTEM_PRESETS = {
+      1: ['Bedroom'],
+      2: ['Living', 'Master BR'],
+      3: ['Living', 'Master BR', 'Bedroom'],
+      4: ['Living', 'Master BR', 'Bedroom', 'Bedroom'],
+      5: ['Living', 'Master BR', 'Bedroom', 'Bedroom', 'Study']
+    };
+
+    let rooms = [];
+
+    function makeRoom(type) {
+      const p = ROOM_PRESETS[type] || ROOM_PRESETS['Custom'];
+      return { type, capacity: p.capacity, hoursDay: p.hoursDay, daysYear: 350 };
+    }
+
+    function setPreset(n) {
+      rooms = SYSTEM_PRESETS[n].map(makeRoom);
+      renderRooms();
+      compute();
+    }
+
+    function renderRooms() {
+      const tb = $('roomsBody');
+      tb.innerHTML = rooms.map((r, i) => `
+        <tr>
+          <td>
+            <select data-i="${i}" data-k="type">
+              ${Object.keys(ROOM_PRESETS).map(t => `<option ${t === r.type ? 'selected' : ''}>${t}</option>`).join('')}
+            </select>
+          </td>
+          <td><input data-i="${i}" data-k="capacity" type="number" step="0.1" min="0" value="${r.capacity}" class="rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none px-2 py-1 text-sm" /></td>
+          <td class="tabular-nums text-xs text-slate-400">${Math.round(r.capacity * 3412 / 100) * 100}</td>
+          <td><input data-i="${i}" data-k="hoursDay" type="number" step="0.5" min="0" max="24" value="${r.hoursDay}" class="rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none px-2 py-1 text-sm" /></td>
+          <td><input data-i="${i}" data-k="daysYear" type="number" step="1" min="0" max="365" value="${r.daysYear}" class="rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none px-2 py-1 text-sm" /></td>
+          <td class="text-right">
+            <button data-rm="${i}" class="text-xs text-slate-400 hover:text-rose-600">Remove</button>
+          </td>
+        </tr>
+      `).join('');
+      // Re-make the select wider since we styled it via tbody but want it consistent
+      tb.querySelectorAll('select').forEach(s => s.classList.add('rounded-md', 'ring-1', 'ring-slate-200', 'px-2', 'py-1', 'text-sm', 'bg-white'));
+    }
+
+    $('roomsBody').addEventListener('input', e => {
+      const t = e.target;
+      const i = +t.dataset.i, k = t.dataset.k;
+      if (i === undefined || !k) return;
+      let v = t.value;
+      if (k !== 'type') v = parseFloat(v) || 0;
+      else { Object.assign(rooms[i], ROOM_PRESETS[v]); }
+      rooms[i][k] = v;
+      renderRooms();
+      compute();
+    });
+    $('roomsBody').addEventListener('click', e => {
+      const i = +e.target.dataset.rm;
+      if (Number.isNaN(i)) return;
+      rooms.splice(i, 1);
+      renderRooms();
+      compute();
+    });
+    $('addRoom').addEventListener('click', () => {
+      rooms.push(makeRoom('Bedroom'));
+      renderRooms();
+      compute();
+    });
+    document.querySelectorAll('.preset').forEach(b => {
+      b.addEventListener('click', () => setPreset(+b.dataset.preset));
+    });
+
+    // ---- MODEL PICKERS ----
+    function populateModels() {
+      const opts = window.AIRCON_ALL
+        .filter(r => r.wCop && r.capacity)
+        .sort((a, b) => (a.brand || '').localeCompare(b.brand || ''))
+        .map(r => `<option value="${r.id}">${r.brand} ${r.model} — ${r.capacity}kW · ${r.wCop.toFixed(2)} ${r.phase === '3' ? 'IEER' : 'COP'} · ${'★'.repeat(r.ticks || 0)}</option>`)
+        .join('');
+      document.querySelectorAll('.opt-model').forEach(s => s.innerHTML += opts);
+    }
+    populateModels();
+
+    // Apply model picker → fill in COP, ticks, type
+    document.querySelectorAll('.opt-model').forEach(sel => {
+      sel.addEventListener('change', e => {
+        const id = e.target.value;
+        if (!id) return;
+        const m = window.AIRCON_ALL.find(r => r.id === id);
+        if (!m) return;
+        const root = e.target.closest('[data-opt]');
+        root.querySelector('.opt-cop').value = m.wCop.toFixed(2);
+        root.querySelector('.opt-ticks').value = m.ticks || 0;
+        if (m.phase === '3') root.querySelector('.opt-type').value = 'vrf';
+        else if (m.type === 'Single Split') root.querySelector('.opt-type').value = 'single';
+        else root.querySelector('.opt-type').value = 'multi';
+        compute();
+      });
+    });
+
+    // Apply ticks preset → fill COP from median
+    document.querySelectorAll('.opt-ticks').forEach(sel => {
+      sel.addEventListener('change', e => {
+        const t = +e.target.value;
+        if (t === 0) return;
+        const root = e.target.closest('[data-opt]');
+        if (TICK_MEDIANS[t]) root.querySelector('.opt-cop').value = TICK_MEDIANS[t].toFixed(2);
+        // clear specific model since we're overriding
+        root.querySelector('.opt-model').value = '';
+        compute();
+      });
+    });
+
+    // Any input in option panels → recompute
+    document.querySelectorAll('[data-opt] input, [data-opt] select').forEach(el => {
+      el.addEventListener('input', compute);
+    });
+    ['elecTariff','elecIncrease','gst','loadFactor','diversity','multiPenalty','degradation','lifespan'].forEach(id => {
+      $(id).addEventListener('input', compute);
+    });
+
+    // ---- READ FROM URL (?into=B&model=X) ----
+    function applyUrlParam() {
+      const p = new URLSearchParams(location.search);
+      const into = p.get('into'), id = p.get('model');
+      if (!into || !id) return;
+      const root = document.querySelector(`[data-opt="${into.toUpperCase()}"]`);
+      if (!root) return;
+      const sel = root.querySelector('.opt-model');
+      sel.value = id;
+      sel.dispatchEvent(new Event('change'));
+    }
+
+    // ---- CALC ----
+    function readOpt(letter) {
+      const root = document.querySelector(`[data-opt="${letter}"]`);
+      return {
+        cop: parseFloat(root.querySelector('.opt-cop').value) || 0,
+        type: root.querySelector('.opt-type').value,
+        age: parseFloat(root.querySelector('.opt-age').value) || 0,
+        salvage: parseFloat(root.querySelector('.opt-salvage').value) || 0,
+        price: parseFloat(root.querySelector('.opt-price').value) || 0,
+        install: parseFloat(root.querySelector('.opt-install').value) || 0,
+        rebate: parseFloat(root.querySelector('.opt-rebate').value) || 0
+      };
+    }
+
+    function effectiveCop(opt, multiPenaltyPct, degradationPct) {
+      let cop = opt.cop;
+      if (opt.type === 'multi' || opt.type === 'vrf') cop *= (1 - multiPenaltyPct / 100);
+      if (opt.age > 0) cop *= Math.pow(1 - degradationPct / 100, opt.age);
+      return cop;
+    }
+
+    function annualKwh(opt, opts) {
+      const cop = effectiveCop(opt, opts.multiPenalty, opts.degradation);
+      if (cop <= 0) return 0;
+      const totalCapacityHrs = rooms.reduce((s, r) => s + r.capacity * r.hoursDay * r.daysYear, 0);
+      const useful = totalCapacityHrs * opts.loadFactor * opts.diversity;
+      return useful / cop;
+    }
+
+    function compute() {
+      const opts = {
+        elecTariff: parseFloat($('elecTariff').value) || 0,
+        elecInc: parseFloat($('elecIncrease').value) / 100 || 0,
+        gst: parseFloat($('gst').value) / 100 || 0,
+        loadFactor: parseFloat($('loadFactor').value) || 0,
+        diversity: parseFloat($('diversity').value) || 0,
+        multiPenalty: parseFloat($('multiPenalty').value) || 0,
+        degradation: parseFloat($('degradation').value) || 0,
+        lifespan: Math.max(1, Math.round(parseFloat($('lifespan').value) || 10))
+      };
+      const A = readOpt('A'), B = readOpt('B');
+
+      const aKwh = annualKwh(A, opts);
+      const bKwh = annualKwh(B, opts);
+
+      const aUpfront = A.price + A.install - A.rebate - A.salvage;
+      const bUpfront = B.price + B.install - B.rebate - B.salvage;
+      const netUpfront = bUpfront - aUpfront;
+
+      const tariffYr = N => opts.elecTariff * Math.pow(1 + opts.elecInc, N - 1) * (1 + opts.gst);
+
+      const rows = [];
+      let cum = 0, breakevenYear = null;
+      for (let y = 1; y <= opts.lifespan; y++) {
+        const t = tariffYr(y);
+        const aCost = aKwh * t;
+        const bCost = bKwh * t;
+        const save = aCost - bCost;
+        cum += save;
+        const net = cum - netUpfront;
+        if (breakevenYear === null && net >= 0 && netUpfront > 0) breakevenYear = y;
+        rows.push({ y, aCost, bCost, save, cum, net });
+      }
+
+      // Render headline
+      $('aKwh').textContent = `${fmtN.format(aKwh)} kWh/yr`;
+      $('bKwh').textContent = `${fmtN.format(bKwh)} kWh/yr`;
+      $('netUpfront').textContent = fmtSGD.format(netUpfront);
+      $('year1Save').textContent = fmtSGD.format(rows[0]?.save ?? 0);
+
+      const msg = $('resultsMessage');
+      msg.classList.add('hidden');
+
+      if (aKwh <= 0 || bKwh <= 0) {
+        $('payback').textContent = '—';
+        $('paybackLabel').textContent = 'Enter rooms and COP/IEER values to compute';
+      } else if (rows[0].save <= 0) {
+        $('payback').textContent = 'No payback';
+        $('paybackLabel').textContent = 'Option B is not cheaper to run than Option A — switching just adds upfront cost';
+        msg.classList.remove('hidden');
+        msg.textContent = 'Option B uses at least as much energy as Option A. Pick a higher-COP option, or check the system-type penalty.';
+      } else if (netUpfront <= 0) {
+        $('payback').textContent = '0 yrs';
+        $('paybackLabel').textContent = 'Already paid back — Option B is cheaper upfront AND in running cost';
+      } else if (breakevenYear === null) {
+        $('payback').textContent = `> ${opts.lifespan} yrs`;
+        $('paybackLabel').textContent = `Doesn't break even within the ${opts.lifespan}-year horizon`;
+      } else {
+        // Refine to fractional year by linear interpolation within breakeven year
+        const prev = rows[breakevenYear - 2]?.net ?? -netUpfront;
+        const cur = rows[breakevenYear - 1].net;
+        const frac = (cur === prev) ? 0 : (-prev) / (cur - prev);
+        const yrs = (breakevenYear - 1) + frac;
+        $('payback').textContent = `${yrs.toFixed(1)} yrs`;
+        $('paybackLabel').textContent = `Cumulative savings cover the upfront in year ${breakevenYear}`;
+      }
+
+      // Render table
+      $('projectionBody').innerHTML = rows.map(r => {
+        const isBE = r.y === breakevenYear;
+        const cls = isBE ? 'bg-emerald-50 font-semibold text-emerald-900' : '';
+        const netClass = r.net >= 0 ? 'text-emerald-700' : 'text-slate-500';
+        return `<tr class="border-b border-slate-100 ${cls}">
+          <td class="py-1.5 pr-4">${r.y}</td>
+          <td class="py-1.5 pr-4">${fmtSGD.format(r.aCost)}</td>
+          <td class="py-1.5 pr-4">${fmtSGD.format(r.bCost)}</td>
+          <td class="py-1.5 pr-4">${fmtSGD.format(r.save)}</td>
+          <td class="py-1.5 pr-4">${fmtSGD.format(r.cum)}</td>
+          <td class="py-1.5 pr-0 ${isBE ? '' : netClass}">${fmtSGD.format(r.net)}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    // ---- INIT ----
+    setPreset(3);            // default 3-system
+    applyUrlParam();
+    compute();
+  </script>
 </body>
 </html>

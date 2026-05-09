@@ -17,11 +17,16 @@
     },
     {
       slug: 'aircon',
-      title: 'Aircon Replacement',
+      title: 'Aircon ROI',
       icon: '❄',
-      description: 'Coming soon',
-      comingSoon: true,
-      pages: [{ slug: '', title: 'Calculator' }]
+      description: 'Compare star ratings & system configs',
+      pages: [
+        { slug: '',            title: 'Calculator' },
+        { slug: 'models',      title: 'Models' },
+        { slug: 'methodology', title: 'Methodology' },
+        { slug: 'learn',       title: 'How Aircons Work' },
+        { slug: 'faq',         title: 'FAQ' }
+      ]
     }
   ];
 
