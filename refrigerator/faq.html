@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Refrigerator ROI — FAQ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    details > summary { list-style: none; cursor: pointer; }
+    details > summary::-webkit-details-marker { display: none; }
+    details[open] .chev { transform: rotate(90deg); }
+    .chev { transition: transform 150ms; display: inline-block; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+  <header class="md:hidden flex items-center gap-3 px-4 py-3 bg-white border-b border-slate-200 sticky top-0 z-20">
+    <button id="navToggle" class="p-1 rounded hover:bg-slate-100" aria-label="Toggle navigation">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <span class="font-semibold text-slate-900">ROI Tools</span>
+  </header>
+  <div id="navBackdrop" class="hidden fixed inset-0 bg-slate-900/40 z-30 md:hidden"></div>
+  <div class="md:flex">
+    <aside id="sidebar"
+      class="fixed md:sticky top-0 left-0 z-40 w-64 h-screen bg-white border-r border-slate-200 overflow-y-auto -translate-x-full md:translate-x-0 transition-transform duration-200 md:transition-none"></aside>
+    <div class="flex-1 min-w-0">
+      <nav id="subtabs" class="bg-white border-b border-slate-200 md:sticky md:top-0 z-10"></nav>
+      <main class="max-w-5xl mx-auto px-4 py-6 sm:py-8">
+
+        <header class="mb-6">
+          <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">Refrigerator ROI — FAQ</h1>
+          <p class="text-sm sm:text-base text-slate-600 mt-1">
+            Practical questions about whether (and when) to upgrade.
+          </p>
+        </header>
+
+        <section class="space-y-3">
+
+          <details class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 group" open>
+            <summary class="flex items-start justify-between gap-3">
+              <h2 class="text-base sm:text-lg font-semibold text-slate-900">Is it really worth replacing my old fridge for a new energy-efficient one?</h2>
+              <span class="chev text-slate-400 mt-1">&rsaquo;</span>
+            </summary>
+            <div class="mt-4 text-sm text-slate-700 leading-relaxed space-y-2">
+              <p><strong>Usually not on energy savings alone.</strong> Run the calculator with your honest numbers and you'll typically see payback &gt; 12 years against a normal $1,500 unit.</p>
+              <p>The case for replacement is almost always:</p>
+              <ul class="list-disc list-inside space-y-1">
+                <li>The compressor is failing or already failed.</li>
+                <li>Door seals can't hold temperature anymore.</li>
+                <li>Cooling has become uneven (food spoiling unexpectedly).</li>
+                <li>Repair cost approaches the new-unit cost.</li>
+              </ul>
+              <p>When end-of-life forces your hand, <strong>then</strong> the calculator helps decide between 3★ and 4★ — and the energy gap often justifies the small price premium for 4★.</p>
+            </div>
+          </details>
+
+          <details class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 group">
+            <summary class="flex items-start justify-between gap-3">
+              <h2 class="text-base sm:text-lg font-semibold text-slate-900">Why are there only 3★ and 4★ fridges in the registry — no 5★?</h2>
+              <span class="chev text-slate-400 mt-1">&rsaquo;</span>
+            </summary>
+            <div class="mt-4 text-sm text-slate-700 leading-relaxed space-y-2">
+              <p>NEA's tick thresholds for fridges are tight, and 5★ requires efficiency levels that almost no current production model achieves while still meeting other consumer requirements (size, fast-cooling, freezer compartment volume).</p>
+              <p>It's not a flaw in the data — it's the actual market. A 4★ fridge is the practical "best you can buy" right now.</p>
+            </div>
+          </details>
+
+          <details class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 group">
+            <summary class="flex items-start justify-between gap-3">
+              <h2 class="text-base sm:text-lg font-semibold text-slate-900">How accurate is the "Estimate from age + volume" mode?</h2>
+              <span class="chev text-slate-400 mt-1">&rsaquo;</span>
+            </summary>
+            <div class="mt-4 text-sm text-slate-700 leading-relaxed space-y-2">
+              <p>It's a calibrated guess, not a measurement. The formula uses 0.85 kWh/L/yr as a baseline (slightly above the current 3★ median, charitable for old units when they were new) and degrades by 4% per year past age 5 — roughly matching seal-wear and compressor decline trends from utility studies.</p>
+              <p>For more accuracy, plug a smart plug or energy meter into the fridge for 3–7 days and extrapolate to a year. Use Custom mode with that number.</p>
+              <p>Big fudge factors: a poorly maintained 12-year-old can be worse than the estimate; a well-cared-for 15-year-old can be better. The estimate sits at a typical middle.</p>
+            </div>
+          </details>
+
+          <details class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 group">
+            <summary class="flex items-start justify-between gap-3">
+              <h2 class="text-base sm:text-lg font-semibold text-slate-900">What size fridge do I actually need?</h2>
+              <span class="chev text-slate-400 mt-1">&rsaquo;</span>
+            </summary>
+            <div class="mt-4 text-sm text-slate-700 leading-relaxed space-y-2">
+              <p>Rule of thumb is ~120 L per person, with adjustments for cooking style:</p>
+              <ul class="list-disc list-inside space-y-1">
+                <li>1 person, eats out a lot → ~150 L</li>
+                <li>2 people, mixed → ~300 L</li>
+                <li>3–4 people, weekly grocery shop → ~450 L</li>
+                <li>5+ people or batch cooking → ~600 L</li>
+              </ul>
+              <p>Don't oversize — empty space still gets cooled. Don't undersize either: stuffing blocks airflow and the compressor works harder.</p>
+            </div>
+          </details>
+
+          <details class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 group">
+            <summary class="flex items-start justify-between gap-3">
+              <h2 class="text-base sm:text-lg font-semibold text-slate-900">What about Climate Voucher / NEA rebates?</h2>
+              <span class="chev text-slate-400 mt-1">&rsaquo;</span>
+            </summary>
+            <div class="mt-4 text-sm text-slate-700 leading-relaxed space-y-2">
+              <p>SG schemes around energy-efficient appliances change frequently — amounts and which star ratings qualify both shift. The calculator's Rebate field is manual; enter the actual dollar amount you'd receive (or 0 if none).</p>
+              <p>Check the current rules at <a class="text-teal-600 hover:underline" href="https://www.nea.gov.sg/our-services/climate-change-energy-efficiency/energy-efficiency/household-sector/energy-labelling-scheme" target="_blank" rel="noopener">NEA's site</a> or the most recent CDC voucher cycle. As of recent cycles, qualifying 4★ fridges have attracted vouchers in the $150–300 range for HDB residents.</p>
+            </div>
+          </details>
+
+          <details class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 group">
+            <summary class="flex items-start justify-between gap-3">
+              <h2 class="text-base sm:text-lg font-semibold text-slate-900">Why is the calculator's annual kWh sometimes different from NEA's published figure?</h2>
+              <span class="chev text-slate-400 mt-1">&rsaquo;</span>
+            </summary>
+            <div class="mt-4 text-sm text-slate-700 leading-relaxed space-y-2">
+              <p>The only reason the calculator's number differs from the NEA label is the <strong>door-opening factor</strong>. Default is 1.0 (matches NEA's standard test). Bump it to 1.1 if you have a heavy household; drop to 0.9 if you barely open the fridge.</p>
+              <p>Beyond that, NEA's Annual kWh is realistic for SG kitchen conditions — fridges are tested at standardised 25°C ambient, close to a typical SG kitchen, so unlike aircon (where standard test ≠ tropical reality) the label number is trustworthy.</p>
+            </div>
+          </details>
+
+          <details class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 group">
+            <summary class="flex items-start justify-between gap-3">
+              <h2 class="text-base sm:text-lg font-semibold text-slate-900">What's the door-opening factor?</h2>
+              <span class="chev text-slate-400 mt-1">&rsaquo;</span>
+            </summary>
+            <div class="mt-4 text-sm text-slate-700 leading-relaxed space-y-2">
+              <p>A multiplier on annual kWh that captures real-world door-opening behaviour vs the NEA standard test. Each door opening lets warm air in and the compressor has to remove that heat.</p>
+              <ul class="list-disc list-inside space-y-1">
+                <li><strong>0.9</strong> — single person, minimal cooking, fridge mostly stocked with drinks.</li>
+                <li><strong>1.0</strong> — default. Standard household.</li>
+                <li><strong>1.1–1.15</strong> — large family, heavy daily cooking, kids opening fridge constantly.</li>
+              </ul>
+              <p>The effect on annual kWh is usually under ±15%. For most people, leaving it at 1.0 is fine.</p>
+            </div>
+          </details>
+
+          <details class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 group">
+            <summary class="flex items-start justify-between gap-3">
+              <h2 class="text-base sm:text-lg font-semibold text-slate-900">Should I buy a bigger or smaller fridge to save energy?</h2>
+              <span class="chev text-slate-400 mt-1">&rsaquo;</span>
+            </summary>
+            <div class="mt-4 text-sm text-slate-700 leading-relaxed space-y-2">
+              <p>Smaller — but only marginally, and only if you can actually live with the smaller volume. The energy difference between a 350L and 500L 4★ fridge is roughly 30 kWh/yr, or about $9/yr at SG tariffs. That's noise compared to the gap between 3★ and 4★ at the same volume (~70 kWh/yr).</p>
+              <p>The much bigger savings are in <strong>star rating</strong>, not size. Don't buy a too-small fridge to save energy and end up needing a chest freezer separately — that's worse on every dimension.</p>
+            </div>
+          </details>
+
+        </section>
+
+        <footer class="text-xs text-slate-500 leading-relaxed mt-8">
+          <p>
+            See <a class="text-teal-600 hover:underline" href="methodology.html">Methodology</a> for formulas, or
+            <a class="text-teal-600 hover:underline" href="learn.html">How Fridges Work</a> for the underlying mechanics.
+          </p>
+        </footer>
+
+      </main>
+    </div>
+  </div>
+  <script src="/assets/nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>How Fridges Work — Ticks, Inverter, Volume, Sizing</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+  <header class="md:hidden flex items-center gap-3 px-4 py-3 bg-white border-b border-slate-200 sticky top-0 z-20">
+    <button id="navToggle" class="p-1 rounded hover:bg-slate-100" aria-label="Toggle navigation">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <span class="font-semibold text-slate-900">ROI Tools</span>
+  </header>
+  <div id="navBackdrop" class="hidden fixed inset-0 bg-slate-900/40 z-30 md:hidden"></div>
+  <div class="md:flex">
+    <aside id="sidebar"
+      class="fixed md:sticky top-0 left-0 z-40 w-64 h-screen bg-white border-r border-slate-200 overflow-y-auto -translate-x-full md:translate-x-0 transition-transform duration-200 md:transition-none"></aside>
+    <div class="flex-1 min-w-0">
+      <nav id="subtabs" class="bg-white border-b border-slate-200 md:sticky md:top-0 z-10"></nav>
+      <main class="max-w-5xl mx-auto px-4 py-6 sm:py-8">
+
+        <header class="mb-8">
+          <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">How Fridges Work</h1>
+          <p class="text-sm sm:text-base text-slate-600 mt-1">
+            What "Annual kWh" really measures, why ticks matter, what an inverter compressor changes,
+            and how to size a fridge for a Singapore household.
+          </p>
+        </header>
+
+        <!-- TL;DR -->
+        <section class="bg-amber-50 ring-1 ring-amber-200 rounded-2xl p-5 sm:p-6 mb-6 text-sm text-amber-900">
+          <h2 class="text-base font-semibold mb-2">TL;DR</h2>
+          <ul class="list-disc list-inside space-y-1">
+            <li>A fridge moves heat from inside to your kitchen — same refrigeration cycle as an aircon, just colder.</li>
+            <li><strong>Annual kWh</strong> on the NEA label is the realistic running cost — fridges run 24/7 at standardised ambient, close to SG kitchen reality.</li>
+            <li><strong>Ticks</strong>: NEA's current scheme has only 3★ and 4★ for fridges. 5★ effectively doesn't exist on the registry.</li>
+            <li><strong>Inverter</strong> compressors modulate speed instead of cycling on/off. Quieter, ~10–20% more efficient than fixed-speed.</li>
+            <li><strong>Old fridge replacement</strong> rarely pays back on energy alone — it pays back when the old one fails.</li>
+          </ul>
+        </section>
+
+        <!-- THE CYCLE -->
+        <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-6">
+          <h2 class="text-xl font-bold text-slate-900 mb-3">The cycle in one diagram</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+            <div>
+              <svg viewBox="0 0 320 240" class="w-full max-w-md mx-auto" aria-label="Fridge refrigeration cycle">
+                <!-- Inside (cold) -->
+                <rect x="20" y="40" width="120" height="160" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+                <text x="80" y="60" text-anchor="middle" font-size="11" fill="#1e3a8a">Inside</text>
+                <text x="80" y="75" text-anchor="middle" font-size="9" fill="#1e3a8a">~4°C / −18°C</text>
+                <text x="80" y="180" text-anchor="middle" font-size="9" fill="#1e3a8a">evaporator</text>
+                <text x="80" y="192" text-anchor="middle" font-size="9" fill="#1e3a8a">absorbs heat</text>
+
+                <!-- Outside / kitchen -->
+                <rect x="180" y="40" width="120" height="160" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+                <text x="240" y="60" text-anchor="middle" font-size="11" fill="#7f1d1d">Kitchen</text>
+                <text x="240" y="75" text-anchor="middle" font-size="9" fill="#7f1d1d">~28°C ambient</text>
+                <text x="240" y="180" text-anchor="middle" font-size="9" fill="#7f1d1d">condenser coil</text>
+                <text x="240" y="192" text-anchor="middle" font-size="9" fill="#7f1d1d">dumps heat</text>
+
+                <!-- Compressor + flow lines -->
+                <line x1="140" y1="100" x2="180" y2="100" stroke="#dc2626" stroke-width="2"/>
+                <text x="160" y="93" text-anchor="middle" font-size="9" fill="#991b1b">hot gas →</text>
+                <line x1="140" y1="140" x2="180" y2="140" stroke="#2563eb" stroke-width="2"/>
+                <text x="160" y="155" text-anchor="middle" font-size="9" fill="#1e3a8a">← cold liquid</text>
+                <circle cx="160" cy="100" r="9" fill="#fff" stroke="#dc2626" stroke-width="2"/>
+                <text x="160" y="103" text-anchor="middle" font-size="9" fill="#dc2626">⚙</text>
+                <text x="160" y="80" text-anchor="middle" font-size="9" fill="#475569">compressor</text>
+
+                <!-- Power -->
+                <line x1="160" y1="190" x2="160" y2="210" stroke="#facc15" stroke-width="3" stroke-dasharray="3,2"/>
+                <text x="160" y="225" text-anchor="middle" font-size="10" fill="#854d0e">~ AC power in</text>
+              </svg>
+            </div>
+            <div class="text-sm text-slate-700 space-y-2">
+              <p>A fridge is just an aircon running at a different setpoint. The compressor pumps refrigerant in a loop:</p>
+              <ol class="list-decimal list-inside space-y-1">
+                <li>Cold liquid evaporates inside the cabinet, absorbing heat from your food.</li>
+                <li>Compressor squeezes it into a hot, high-pressure gas.</li>
+                <li>Coils on the back / underneath dump that heat to the kitchen.</li>
+                <li>The condensed liquid cycles back. Repeat.</li>
+              </ol>
+              <p>The compressor is essentially the only meaningful energy consumer. A typical fridge today uses 0.6–0.9 kWh per litre of internal volume per year.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- TICKS -->
+        <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-6">
+          <h2 class="text-xl font-bold text-slate-900 mb-3">NEA Ticks for fridges</h2>
+          <p class="text-sm text-slate-700 mb-3">
+            NEA's energy-efficiency thresholds are calibrated by volume so a 600L family fridge and a 200L
+            studio fridge can both earn the same star count. The current registry has only 3★ and 4★ entries —
+            other tick bands are either above the entire fleet or below the minimum threshold to even sell.
+          </p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-50 ring-1 ring-slate-200 rounded-lg p-4">
+              <h3 class="font-semibold text-slate-900 mb-2">3★ (median ~0.81 kWh/L/yr)</h3>
+              <p class="text-sm text-slate-700">The vast majority of new fridges on sale today (375 of 397 in the registry).
+              Base efficient. Most major brands at most price points.</p>
+            </div>
+            <div class="bg-teal-50 ring-1 ring-teal-200 rounded-lg p-4">
+              <h3 class="font-semibold text-teal-900 mb-2">4★ (median ~0.62 kWh/L/yr)</h3>
+              <p class="text-sm text-teal-900">~22 fridges. Premium inverter models. Roughly 25% less energy than 3★ for
+              the same volume. Often $200–500 price premium.</p>
+            </div>
+          </div>
+          <p class="text-xs text-slate-500 mt-3">
+            For comparison: a typical 15-year-old fridge often runs at <strong>1.0–1.5 kWh/L/yr</strong> —
+            that's where the case for replacement gets stronger.
+          </p>
+        </section>
+
+        <!-- INVERTER -->
+        <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-6">
+          <h2 class="text-xl font-bold text-slate-900 mb-3">Inverter vs fixed-speed compressor</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-50 ring-1 ring-slate-200 rounded-lg p-4">
+              <h3 class="font-semibold text-slate-900 mb-2">Fixed-speed</h3>
+              <ul class="text-sm text-slate-700 list-disc list-inside space-y-1">
+                <li>Compressor is either ON at full power or OFF.</li>
+                <li>Cycles repeatedly through the day (audible "kachunk").</li>
+                <li>Each restart wastes a slug of energy and stresses the motor.</li>
+                <li>Internal temperature swings ±2°C around setpoint.</li>
+                <li>Found in cheaper models and most pre-2015 fridges.</li>
+              </ul>
+            </div>
+            <div class="bg-teal-50 ring-1 ring-teal-200 rounded-lg p-4">
+              <h3 class="font-semibold text-teal-900 mb-2">Inverter</h3>
+              <ul class="text-sm text-teal-900 list-disc list-inside space-y-1">
+                <li>Variable-speed compressor &mdash; runs slow most of the time.</li>
+                <li>Tighter ±0.5°C control; better food preservation.</li>
+                <li>Quieter (steady hum vs starts/stops).</li>
+                <li>~10–20% more efficient at typical SG kitchen ambient.</li>
+                <li>Standard on most 4★ models; widespread on 3★ now.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- SIZING -->
+        <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-6">
+          <h2 class="text-xl font-bold text-slate-900 mb-3">Sizing for a Singapore household</h2>
+          <p class="text-sm text-slate-700 mb-3">A common rule of thumb is ~120 L per person, then add for cooking style:</p>
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+              <thead>
+                <tr class="text-left text-slate-500 border-b border-slate-200">
+                  <th class="py-2 pr-4 font-medium">Household</th>
+                  <th class="py-2 pr-4 font-medium">Cooks at home rarely</th>
+                  <th class="py-2 pr-0 font-medium">Cooks daily / has weekly grocery run</th>
+                </tr>
+              </thead>
+              <tbody class="[&amp;>tr]:border-b [&amp;>tr]:border-slate-100 [&amp;>tr>td]:py-2 [&amp;>tr>td]:pr-4">
+                <tr><td>1 person</td><td>~150 L</td><td>~250 L</td></tr>
+                <tr><td>2 people</td><td>~250 L</td><td>~350 L</td></tr>
+                <tr><td>3–4 people</td><td>~400 L</td><td>~500 L</td></tr>
+                <tr><td>5+ people</td><td>~500 L</td><td>~600+ L</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="text-xs text-slate-500 mt-3">
+            Oversizing wastes energy proportionally — empty space still gets cooled. Undersizing means
+            stuffing the fridge so airflow is blocked, which makes the compressor work harder. Mostly,
+            the energy difference between a 350L and 500L fridge is real but smaller than the difference
+            between a 3★ and 4★ at the same volume.
+          </p>
+        </section>
+
+        <!-- TIPS -->
+        <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-6">
+          <h2 class="text-xl font-bold text-slate-900 mb-3">Real-world energy tips</h2>
+          <ul class="text-sm text-slate-700 list-disc list-inside space-y-1">
+            <li>Set fridge to <strong>4°C</strong>, freezer to <strong>−18°C</strong> — colder than necessary
+              wastes 5–10% per °C extra.</li>
+            <li>Leave at least <strong>5 cm clearance</strong> behind and above for the condenser to dump heat.
+              Pushing it flush against a wall noticeably increases energy use.</li>
+            <li>Don't put it next to the oven or in direct afternoon sun — every °C of ambient adds ~3% energy.</li>
+            <li>Vacuum the back coils annually if accessible — dust acts as insulation in the wrong place.</li>
+            <li>Replace door seals when they no longer "snap" closed on a paper test — failed seals can add
+              20–30% to running cost.</li>
+            <li>A <strong>full</strong> fridge holds temperature better than an empty one, but that doesn't mean
+              over-stuff: airflow matters.</li>
+          </ul>
+        </section>
+
+        <footer class="text-xs text-slate-500 leading-relaxed mt-6">
+          <p>For the full registry of fridges currently on sale, see <a class="text-teal-600 hover:underline" href="models.html">Models</a>.</p>
+        </footer>
+
+      </main>
+    </div>
+  </div>
+  <script src="/assets/nav.js"></script>
+</body>
+</html>

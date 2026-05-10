@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Refrigerator Models — NEA Energy Labelling Scheme</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="data/fridge-data.js"></script>
+  <style>
+    .ticks { letter-spacing: 1px; font-weight: 600; }
+    .ticks-3 { color: #16a34a; } .ticks-4 { color: #15803d; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+  <header class="md:hidden flex items-center gap-3 px-4 py-3 bg-white border-b border-slate-200 sticky top-0 z-20">
+    <button id="navToggle" class="p-1 rounded hover:bg-slate-100" aria-label="Toggle navigation">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <span class="font-semibold text-slate-900">ROI Tools</span>
+  </header>
+  <div id="navBackdrop" class="hidden fixed inset-0 bg-slate-900/40 z-30 md:hidden"></div>
+  <div class="md:flex">
+    <aside id="sidebar"
+      class="fixed md:sticky top-0 left-0 z-40 w-64 h-screen bg-white border-r border-slate-200 overflow-y-auto -translate-x-full md:translate-x-0 transition-transform duration-200 md:transition-none"></aside>
+    <div class="flex-1 min-w-0">
+      <nav id="subtabs" class="bg-white border-b border-slate-200 md:sticky md:top-0 z-10"></nav>
+      <main class="max-w-6xl mx-auto px-4 py-6 sm:py-8">
+
+        <header class="mb-6">
+          <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">Refrigerator Models</h1>
+          <p class="text-sm sm:text-base text-slate-600 mt-1">
+            Browse the NEA registry of refrigerators sold in Singapore. Filter, sort, then click
+            <strong>Use as A</strong> or <strong>Use as B</strong> to load the model into the calculator.
+          </p>
+        </header>
+
+        <!-- FILTERS -->
+        <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-4 sm:p-5 mb-4">
+          <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+            <label class="block">
+              <span class="text-xs font-medium text-slate-700">Search</span>
+              <input id="fSearch" type="text" placeholder="brand or model"
+                class="mt-1 w-full rounded-lg ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none px-2 py-1.5 text-sm" />
+            </label>
+            <label class="block">
+              <span class="text-xs font-medium text-slate-700">Type</span>
+              <select id="fType" class="mt-1 w-full rounded-lg ring-1 ring-slate-200 px-2 py-1.5 text-sm bg-white">
+                <option value="">All</option>
+              </select>
+            </label>
+            <label class="block">
+              <span class="text-xs font-medium text-slate-700">Brand</span>
+              <select id="fBrand" class="mt-1 w-full rounded-lg ring-1 ring-slate-200 px-2 py-1.5 text-sm bg-white">
+                <option value="">All</option>
+              </select>
+            </label>
+            <label class="block">
+              <span class="text-xs font-medium text-slate-700">Min ticks</span>
+              <select id="fTicks" class="mt-1 w-full rounded-lg ring-1 ring-slate-200 px-2 py-1.5 text-sm bg-white">
+                <option value="0">Any</option>
+                <option value="3">3★ +</option>
+                <option value="4">4★ only</option>
+              </select>
+            </label>
+            <label class="block">
+              <span class="text-xs font-medium text-slate-700">Min volume (L)</span>
+              <input id="fMinVol" type="number" step="50" min="0" placeholder="e.g. 300"
+                class="mt-1 w-full rounded-lg ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 focus:outline-none px-2 py-1.5 text-sm" />
+            </label>
+          </div>
+          <div class="flex items-center justify-between mt-3 text-xs text-slate-500">
+            <span id="resultCount">—</span>
+            <button id="fReset" class="text-teal-600 hover:underline">Reset filters</button>
+          </div>
+        </section>
+
+        <!-- TABLE -->
+        <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+              <thead class="bg-slate-50 text-slate-600 text-xs uppercase tracking-wide">
+                <tr id="tHeader">
+                  <th data-key="ticks" class="px-3 py-2 text-left cursor-pointer hover:bg-slate-100">Ticks</th>
+                  <th data-key="brand" class="px-3 py-2 text-left cursor-pointer hover:bg-slate-100">Brand</th>
+                  <th data-key="model" class="px-3 py-2 text-left cursor-pointer hover:bg-slate-100">Model</th>
+                  <th data-key="type" class="px-3 py-2 text-left cursor-pointer hover:bg-slate-100">Type</th>
+                  <th data-key="volume" class="px-3 py-2 text-right cursor-pointer hover:bg-slate-100">Volume (L)</th>
+                  <th data-key="kWhYear" class="px-3 py-2 text-right cursor-pointer hover:bg-slate-100">Annual kWh</th>
+                  <th class="px-3 py-2 text-right">kWh / L</th>
+                  <th class="px-3 py-2 text-center">Use in calculator</th>
+                </tr>
+              </thead>
+              <tbody id="tBody" class="[&amp;>tr]:border-t [&amp;>tr]:border-slate-100"></tbody>
+            </table>
+          </div>
+          <div id="tEmpty" class="hidden text-center text-sm text-slate-500 py-8">No models match your filters.</div>
+          <div class="px-4 py-3 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
+            <span id="tPagInfo">—</span>
+            <div class="flex gap-1">
+              <button id="tPrev" class="px-2 py-1 rounded ring-1 ring-slate-200 hover:bg-slate-50 disabled:opacity-40">Prev</button>
+              <button id="tNext" class="px-2 py-1 rounded ring-1 ring-slate-200 hover:bg-slate-50 disabled:opacity-40">Next</button>
+            </div>
+          </div>
+        </section>
+
+        <footer class="text-xs text-slate-500 leading-relaxed mt-6">
+          <p>
+            Source: NEA Energy Labelling Scheme registry (snapshot in this repo). Annual kWh is
+            NEA's published figure under standard test conditions and is reasonably accurate for
+            real fridge use (24/7 standard operation, modest variation from door-opening).
+            <strong>kWh per litre</strong> is a quick efficiency proxy — lower is better.
+          </p>
+        </footer>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="/assets/nav.js"></script>
+  <script>
+    const PAGE_SIZE = 25;
+    const fmt = (n, d = 0) => n == null ? '—' : Number(n).toFixed(d);
+    const $ = id => document.getElementById(id);
+
+    function ticksBadge(t) {
+      if (!t) return '<span class="text-slate-400">—</span>';
+      return `<span class="ticks ticks-${t}">${'★'.repeat(t)}${'☆'.repeat(5-t)}</span>`;
+    }
+
+    let state = { sortKey: 'kWhYear', sortDir: 1, page: 1, rows: [] };
+
+    function uniqueSorted(arr, k) {
+      return [...new Set(arr.map(r => r[k]).filter(Boolean))].sort();
+    }
+
+    function populateSelects() {
+      $('fType').innerHTML += uniqueSorted(window.FRIDGE_DATA, 'type').map(t => `<option value="${t}">${t}</option>`).join('');
+      $('fBrand').innerHTML += uniqueSorted(window.FRIDGE_DATA, 'brand').map(b => `<option value="${b}">${b}</option>`).join('');
+    }
+
+    function applyFilters() {
+      const search = $('fSearch').value.trim().toLowerCase();
+      const type = $('fType').value;
+      const brand = $('fBrand').value;
+      const minTicks = parseInt($('fTicks').value, 10);
+      const minVol = parseFloat($('fMinVol').value) || 0;
+
+      state.rows = window.FRIDGE_DATA.filter(r => {
+        if (type && r.type !== type) return false;
+        if (brand && r.brand !== brand) return false;
+        if (minTicks === 4 && r.ticks !== 4) return false;
+        if (minTicks === 3 && (r.ticks || 0) < 3) return false;
+        if (minVol > 0 && (r.volume || 0) < minVol) return false;
+        if (search) {
+          const hay = `${r.brand || ''} ${r.model || ''}`.toLowerCase();
+          if (!hay.includes(search)) return false;
+        }
+        return true;
+      });
+      sortRows();
+      state.page = 1;
+      render();
+    }
+
+    function sortRows() {
+      const k = state.sortKey, d = state.sortDir;
+      state.rows.sort((a, b) => {
+        const va = a[k] ?? -Infinity, vb = b[k] ?? -Infinity;
+        if (typeof va === 'string') return d * va.localeCompare(vb);
+        return d * (va - vb);
+      });
+    }
+
+    function render() {
+      $('resultCount').textContent = `${state.rows.length} of ${window.FRIDGE_DATA.length} models`;
+      const start = (state.page - 1) * PAGE_SIZE;
+      const slice = state.rows.slice(start, start + PAGE_SIZE);
+      $('tBody').innerHTML = slice.map(r => {
+        const kwhPerL = (r.kWhYear && r.volume) ? (r.kWhYear / r.volume) : null;
+        return `
+        <tr class="hover:bg-slate-50">
+          <td class="px-3 py-2">${ticksBadge(r.ticks)}</td>
+          <td class="px-3 py-2 font-medium text-slate-900">${r.brand || ''}</td>
+          <td class="px-3 py-2 text-slate-700">${r.model || ''}</td>
+          <td class="px-3 py-2 text-xs text-slate-500">${r.type || ''}</td>
+          <td class="px-3 py-2 text-right tabular-nums">${fmt(r.volume, 0)}</td>
+          <td class="px-3 py-2 text-right tabular-nums">${fmt(r.kWhYear, 0)}</td>
+          <td class="px-3 py-2 text-right tabular-nums text-slate-500">${kwhPerL == null ? '—' : kwhPerL.toFixed(2)}</td>
+          <td class="px-3 py-2 text-center whitespace-nowrap">
+            <a href="index.html?into=A&amp;model=${encodeURIComponent(r.id)}" class="text-xs px-2 py-1 rounded ring-1 ring-slate-200 hover:ring-teal-400 hover:text-teal-700">Use as A</a>
+            <a href="index.html?into=B&amp;model=${encodeURIComponent(r.id)}" class="text-xs px-2 py-1 rounded ring-1 ring-teal-300 bg-teal-50 text-teal-700 hover:bg-teal-100">Use as B</a>
+          </td>
+        </tr>`;
+      }).join('');
+      $('tEmpty').classList.toggle('hidden', state.rows.length > 0);
+      const totalPages = Math.max(1, Math.ceil(state.rows.length / PAGE_SIZE));
+      $('tPagInfo').textContent = `Page ${state.page} of ${totalPages}`;
+      $('tPrev').disabled = state.page <= 1;
+      $('tNext').disabled = state.page >= totalPages;
+    }
+
+    populateSelects();
+    applyFilters();
+
+    ['fSearch','fType','fBrand','fTicks','fMinVol'].forEach(id => $(id).addEventListener('input', applyFilters));
+    $('fReset').addEventListener('click', () => {
+      ['fSearch','fType','fBrand','fMinVol'].forEach(id => $(id).value = '');
+      $('fTicks').value = '0';
+      applyFilters();
+    });
+    $('tHeader').addEventListener('click', e => {
+      const k = e.target.closest('th')?.dataset.key;
+      if (!k) return;
+      state.sortDir = state.sortKey === k ? -state.sortDir : 1;
+      state.sortKey = k;
+      sortRows(); render();
+    });
+    $('tPrev').addEventListener('click', () => { state.page--; render(); });
+    $('tNext').addEventListener('click', () => { state.page++; render(); });
+  </script>
+</body>
+</html>

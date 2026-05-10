@@ -15,10 +15,11 @@ of pages — no per-page nav edits.
 
 ## Calculators
 
-| Slug          | Status | What it does                                                              |
-| ------------- | ------ | ------------------------------------------------------------------------- |
-| `water-heater`| Live   | Gas vs. electric water heater, with payback period.                       |
-| `aircon`      | Live   | Side-by-side Option A vs B with NEA model picker, rooms builder, ROI.     |
+| Slug            | Status | What it does                                                              |
+| --------------- | ------ | ------------------------------------------------------------------------- |
+| `aircon`        | Live   | Side-by-side Option A vs B with NEA model picker, rooms builder, ROI.     |
+| `refrigerator` | Live   | Old vs. new fridge ROI. Estimate-by-age, NEA list, or custom kWh modes.   |
+| `water-heater`  | Live   | Gas vs. electric water heater, with payback period.                       |
 
 ## Folder structure
 
@@ -47,6 +48,15 @@ of pages — no per-page nav edits.
 │       ├── aircon-data.js       # extracted NEA records (single + 3-phase)
 │       ├── NEA_ELS_Air_Conditioner_*.xlsx
 │       └── NEA_ELS_AirConditioner(3-Phase)_*.xlsx
+├── refrigerator/               # (folder name preserves typo to avoid path churn)
+│   ├── index.html               # Option A vs B calculator (3 input modes for A)
+│   ├── models.html              # NEA fridge registry browser
+│   ├── methodology.html
+│   ├── learn.html
+│   ├── faq.html
+│   └── data/
+│       ├── fridge-data.js       # 397 fridges extracted from NEA workbook
+│       └── NEA_ELS_Refrigerator_*.xlsx
 └── README.md
 ```
 

@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Refrigerator ROI Calculator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="data/fridge-data.js"></script>
+  <style>
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type="number"] { -moz-appearance: textfield; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+  <header class="md:hidden flex items-center gap-3 px-4 py-3 bg-white border-b border-slate-200 sticky top-0 z-20">
+    <button id="navToggle" class="p-1 rounded hover:bg-slate-100" aria-label="Toggle navigation">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <span class="font-semibold text-slate-900">ROI Tools</span>
+  </header>
+  <div id="navBackdrop" class="hidden fixed inset-0 bg-slate-900/40 z-30 md:hidden"></div>
+  <div class="md:flex">
+    <aside id="sidebar"
+      class="fixed md:sticky top-0 left-0 z-40 w-64 h-screen bg-white border-r border-slate-200 overflow-y-auto -translate-x-full md:translate-x-0 transition-transform duration-200 md:transition-none"></aside>
+    <div class="flex-1 min-w-0">
+      <nav id="subtabs" class="bg-white border-b border-slate-200 md:sticky md:top-0 z-10"></nav>
+      <main class="max-w-6xl mx-auto px-4 py-6 sm:py-8">
+
+        <header class="mb-6">
+          <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">Refrigerator Switcher ROI</h1>
+          <p class="text-sm sm:text-base text-slate-600 mt-1">
+            Compare your current fridge against a new one &mdash; or compare two new options.
+            Browse the <a href="models.html" class="text-teal-600 hover:underline">NEA registry</a>
+            (3&star;/4&star; current models) to load specs in.
+          </p>
+        </header>
+
+        <!-- OPTIONS A vs B -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <!-- Option A -->
+          <div class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6">
+            <div class="flex items-baseline justify-between mb-3">
+              <h2 class="text-lg font-semibold text-slate-900">
+                <span class="inline-block w-6 h-6 rounded-full bg-slate-100 text-slate-700 text-center text-sm font-bold leading-6 mr-1">A</span>
+                Existing / Baseline
+              </h2>
+            </div>
+            <div class="space-y-3" data-opt="A">
+              <label class="block">
+                <span class="text-xs font-medium text-slate-700">How do you want to specify it?</span>
+                <select class="opt-mode mt-1 block w-full rounded-md ring-1 ring-slate-200 px-2 py-1.5 text-sm bg-white">
+                  <option value="estimate" selected>Estimate from age + volume</option>
+                  <option value="list">Pick from NEA list</option>
+                  <option value="custom">Enter known annual kWh</option>
+                </select>
+              </label>
+
+              <!-- Estimate mode -->
+              <div class="opt-mode-estimate space-y-3">
+                <div class="grid grid-cols-2 gap-2">
+                  <label class="block">
+                    <span class="text-xs font-medium text-slate-700">Volume (L)</span>
+                    <input class="opt-volume mt-1 block w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" type="number" step="10" min="50" value="400" />
+                  </label>
+                  <label class="block">
+                    <span class="text-xs font-medium text-slate-700">Age (years)</span>
+                    <input class="opt-age mt-1 block w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" type="number" step="1" min="0" value="10" />
+                  </label>
+                </div>
+                <p class="text-xs text-slate-500">
+                  <span class="opt-est-readout">~408 kWh/yr</span> &middot;
+                  <span class="text-slate-400">base 0.85&times;V&times;(1+max(0,age−5)×0.04)</span>
+                </p>
+              </div>
+
+              <!-- List mode -->
+              <div class="opt-mode-list space-y-3 hidden">
+                <label class="block">
+                  <span class="text-xs font-medium text-slate-700">NEA registry model</span>
+                  <select class="opt-model mt-1 block w-full rounded-md ring-1 ring-slate-200 px-2 py-1.5 text-sm bg-white">
+                    <option value="">— pick one —</option>
+                  </select>
+                </label>
+              </div>
+
+              <!-- Custom mode -->
+              <div class="opt-mode-custom space-y-3 hidden">
+                <label class="block">
+                  <span class="text-xs font-medium text-slate-700">Annual kWh (from utility bill / smart plug)</span>
+                  <input class="opt-kwh mt-1 block w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" type="number" step="10" min="0" value="500" />
+                </label>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2">
+                <label class="block">
+                  <span class="text-xs font-medium text-slate-700">Salvage value (SGD)</span>
+                  <input class="opt-salvage mt-1 block w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" type="number" step="10" min="0" value="0" />
+                </label>
+                <label class="block">
+                  <span class="text-xs font-medium text-slate-700">Disposal cost (SGD)</span>
+                  <input class="opt-disposal mt-1 block w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" type="number" step="10" min="0" value="0" />
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Option B -->
+          <div class="bg-white rounded-2xl shadow-sm ring-1 ring-teal-200 p-5 sm:p-6">
+            <div class="flex items-baseline justify-between mb-3">
+              <h2 class="text-lg font-semibold text-slate-900">
+                <span class="inline-block w-6 h-6 rounded-full bg-teal-100 text-teal-700 text-center text-sm font-bold leading-6 mr-1">B</span>
+                New / Proposed
+              </h2>
+            </div>
+            <div class="space-y-3" data-opt="B">
+              <label class="block">
+                <span class="text-xs font-medium text-slate-700">Pick from NEA list</span>
+                <select class="opt-model mt-1 block w-full rounded-md ring-1 ring-slate-200 px-2 py-1.5 text-sm bg-white">
+                  <option value="">— enter custom specs below —</option>
+                </select>
+              </label>
+              <div class="grid grid-cols-2 gap-2">
+                <label class="block">
+                  <span class="text-xs font-medium text-slate-700">Volume (L)</span>
+                  <input class="opt-volume mt-1 block w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" type="number" step="10" min="50" value="400" />
+                </label>
+                <label class="block">
+                  <span class="text-xs font-medium text-slate-700">Annual kWh</span>
+                  <input class="opt-kwh mt-1 block w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" type="number" step="10" min="0" value="280" />
+                </label>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <label class="block">
+                  <span class="text-xs font-medium text-slate-700">Star ticks</span>
+                  <select class="opt-ticks mt-1 block w-full rounded-md ring-1 ring-slate-200 px-2 py-1.5 text-sm bg-white">
+                    <option value="0">—</option>
+                    <option value="3">3★</option>
+                    <option value="4" selected>4★</option>
+                  </select>
+                </label>
+                <label class="block">
+                  <span class="text-xs font-medium text-slate-700">Type</span>
+                  <select class="opt-type mt-1 block w-full rounded-md ring-1 ring-slate-200 px-2 py-1.5 text-sm bg-white">
+                    <option value="combo" selected>Refrigerator freezer</option>
+                    <option value="fridge">Refrigerator only</option>
+                  </select>
+                </label>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <label class="block">
+                  <span class="text-xs font-medium text-slate-700">Unit price (SGD)</span>
+                  <input class="opt-price mt-1 block w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" type="number" step="50" min="0" value="1500" />
+                </label>
+                <label class="block">
+                  <span class="text-xs font-medium text-slate-700">Delivery / install (SGD)</span>
+                  <input class="opt-delivery mt-1 block w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" type="number" step="10" min="0" value="50" />
+                </label>
+              </div>
+              <label class="block">
+                <span class="text-xs font-medium text-slate-700">Rebate / Climate Voucher (SGD)</span>
+                <input class="opt-rebate mt-1 block w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" type="number" step="50" min="0" value="0" />
+              </label>
+            </div>
+          </div>
+        </section>
+
+        <!-- SHARED -->
+        <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-4">
+          <h2 class="text-lg font-semibold text-slate-900 mb-3">Tariffs &amp; Assumptions (shared)</h2>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <label class="block">
+              <span class="text-xs font-medium text-slate-700">Electricity (SGD/kWh, before GST)</span>
+              <input id="elecTariff" type="number" step="0.0001" min="0" value="0.2727"
+                class="mt-1 w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" />
+            </label>
+            <label class="block">
+              <span class="text-xs font-medium text-slate-700">Annual increase (%)</span>
+              <input id="elecIncrease" type="number" step="0.1" min="0" value="3"
+                class="mt-1 w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" />
+            </label>
+            <label class="block">
+              <span class="text-xs font-medium text-slate-700">GST (%)</span>
+              <input id="gst" type="number" step="0.1" min="0" max="20" value="9"
+                class="mt-1 w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" />
+            </label>
+            <label class="block">
+              <span class="text-xs font-medium text-slate-700">Door-opening factor</span>
+              <input id="doorFactor" type="number" step="0.05" min="0.5" max="2" value="1.0"
+                class="mt-1 w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" />
+            </label>
+            <label class="block md:col-span-1">
+              <span class="text-xs font-medium text-slate-700">Lifespan horizon (years)</span>
+              <input id="lifespan" type="number" step="1" min="3" max="20" value="12"
+                class="mt-1 w-full rounded-md ring-1 ring-slate-200 focus:ring-2 focus:ring-teal-500 px-2 py-1.5 text-sm" />
+            </label>
+          </div>
+        </section>
+
+        <!-- RESULTS -->
+        <section class="bg-gradient-to-br from-teal-600 to-teal-800 text-white rounded-2xl shadow-lg p-5 sm:p-7 mb-4">
+          <h2 class="text-sm font-semibold uppercase tracking-wide text-teal-200 mb-2">Results</h2>
+          <div class="mb-4">
+            <p class="text-teal-100 text-sm">Payback Period</p>
+            <p id="payback" class="text-3xl sm:text-4xl font-bold">— yrs</p>
+            <p id="paybackLabel" class="text-teal-100 text-sm mt-1">—</p>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div class="bg-white/10 rounded-lg p-3">
+              <p class="text-xs uppercase tracking-wide text-teal-200">Net upfront</p>
+              <p id="netUpfront" class="text-base font-semibold mt-0.5">—</p>
+            </div>
+            <div class="bg-white/10 rounded-lg p-3">
+              <p class="text-xs uppercase tracking-wide text-teal-200">Year-1 savings</p>
+              <p id="year1Save" class="text-base font-semibold mt-0.5">—</p>
+            </div>
+            <div class="bg-white/10 rounded-lg p-3">
+              <p class="text-xs uppercase tracking-wide text-teal-200">A annual energy</p>
+              <p id="aKwh" class="text-base font-semibold mt-0.5">—</p>
+            </div>
+            <div class="bg-white/10 rounded-lg p-3">
+              <p class="text-xs uppercase tracking-wide text-teal-200">B annual energy</p>
+              <p id="bKwh" class="text-base font-semibold mt-0.5">—</p>
+            </div>
+          </div>
+          <div id="resultsMessage" class="hidden mt-3 bg-amber-100 text-amber-900 rounded-lg p-3 text-sm"></div>
+        </section>
+
+        <!-- TABLE -->
+        <section class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200 p-5 sm:p-6 mb-4">
+          <h2 class="text-lg font-semibold text-slate-900 mb-3">Year-by-Year Projection</h2>
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+              <thead>
+                <tr class="text-left text-slate-500 border-b border-slate-200">
+                  <th class="py-2 pr-4 font-medium">Year</th>
+                  <th class="py-2 pr-4 font-medium">A cost</th>
+                  <th class="py-2 pr-4 font-medium">B cost</th>
+                  <th class="py-2 pr-4 font-medium">Savings (B vs A)</th>
+                  <th class="py-2 pr-4 font-medium">Cumulative</th>
+                  <th class="py-2 pr-0 font-medium">Net position</th>
+                </tr>
+              </thead>
+              <tbody id="projectionBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <footer class="text-xs text-slate-500 leading-relaxed">
+          <p>
+            Source for new-fridge specs: <a class="text-teal-600 hover:underline" href="https://www.nea.gov.sg/our-services/climate-change-energy-efficiency/energy-efficiency/household-sector/energy-labelling-scheme" target="_blank" rel="noopener">NEA Energy Labelling Scheme</a>.
+            Old-fridge estimate uses an age × volume heuristic &mdash; see
+            <a href="methodology.html" class="text-teal-600 hover:underline">Methodology</a> for the full formula.
+          </p>
+        </footer>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="/assets/nav.js"></script>
+  <script>
+    'use strict';
+    const fmtSGD = new Intl.NumberFormat('en-SG', { style: 'currency', currency: 'SGD', maximumFractionDigits: 0 });
+    const fmtN = new Intl.NumberFormat('en-SG', { maximumFractionDigits: 0 });
+    const $ = id => document.getElementById(id);
+
+    const BASE_KWH_PER_LITRE = 0.85;     // documented constant
+    const AGE_FREE_YEARS    = 5;
+    const AGE_PENALTY       = 0.04;       // 4% per year past the free window
+
+    // ---- MODEL PICKERS ----
+    function populateModels() {
+      const opts = window.FRIDGE_DATA
+        .filter(r => r.kWhYear && r.volume)
+        .sort((a, b) => (a.brand || '').localeCompare(b.brand || ''))
+        .map(r => `<option value="${r.id}">${r.brand} ${r.model} — ${r.volume}L · ${r.kWhYear} kWh/yr · ${'★'.repeat(r.ticks || 0)}</option>`)
+        .join('');
+      document.querySelectorAll('.opt-model').forEach(s => {
+        s.innerHTML = (s.querySelector('option[value=""]')?.outerHTML || '') + opts;
+      });
+    }
+    populateModels();
+
+    // Apply model picker → fill in volume, kWh, ticks
+    document.querySelectorAll('.opt-model').forEach(sel => {
+      sel.addEventListener('change', e => {
+        const id = e.target.value;
+        if (!id) return;
+        const m = window.FRIDGE_DATA.find(r => r.id === id);
+        if (!m) return;
+        const root = e.target.closest('[data-opt]');
+        if (root.querySelector('.opt-volume')) root.querySelector('.opt-volume').value = m.volume;
+        if (root.querySelector('.opt-kwh')) root.querySelector('.opt-kwh').value = m.kWhYear;
+        const ticksSel = root.querySelector('.opt-ticks');
+        if (ticksSel) ticksSel.value = m.ticks || 0;
+        const typeSel = root.querySelector('.opt-type');
+        if (typeSel) typeSel.value = m.type === 'Refrigerator only' ? 'fridge' : 'combo';
+        compute();
+      });
+    });
+
+    // ---- MODE TOGGLE (Option A) ----
+    function applyMode() {
+      const root = document.querySelector('[data-opt="A"]');
+      const mode = root.querySelector('.opt-mode').value;
+      ['estimate','list','custom'].forEach(m => {
+        root.querySelector(`.opt-mode-${m}`).classList.toggle('hidden', m !== mode);
+      });
+    }
+    document.querySelector('[data-opt="A"] .opt-mode').addEventListener('change', () => { applyMode(); compute(); });
+    applyMode();
+
+    // ---- READ FROM URL (?into=B&model=X) ----
+    function applyUrlParam() {
+      const p = new URLSearchParams(location.search);
+      const into = (p.get('into') || '').toUpperCase(), id = p.get('model');
+      if (!into || !id) return;
+      const root = document.querySelector(`[data-opt="${into}"]`);
+      if (!root) return;
+      if (into === 'A') {
+        root.querySelector('.opt-mode').value = 'list';
+        applyMode();
+      }
+      const sel = root.querySelector('.opt-model');
+      if (sel) {
+        sel.value = id;
+        sel.dispatchEvent(new Event('change'));
+      }
+    }
+
+    // ---- READ INPUTS ----
+    function readEstimate(root, doorFactor) {
+      const v = parseFloat(root.querySelector('.opt-volume').value) || 0;
+      const a = parseFloat(root.querySelector('.opt-age').value) || 0;
+      const ageMul = 1 + Math.max(0, a - AGE_FREE_YEARS) * AGE_PENALTY;
+      const kwh = BASE_KWH_PER_LITRE * v * ageMul * doorFactor;
+      root.querySelector('.opt-est-readout').textContent = `~${Math.round(kwh)} kWh/yr`;
+      return kwh;
+    }
+
+    function readOptA(doorFactor) {
+      const root = document.querySelector('[data-opt="A"]');
+      const mode = root.querySelector('.opt-mode').value;
+      let kwh = 0;
+      if (mode === 'estimate') {
+        kwh = readEstimate(root, doorFactor);
+      } else if (mode === 'list') {
+        const id = root.querySelector('.opt-model').value;
+        const m = id ? window.FRIDGE_DATA.find(r => r.id === id) : null;
+        kwh = (m?.kWhYear || 0) * doorFactor;
+      } else {
+        kwh = (parseFloat(root.querySelector('.opt-kwh').value) || 0) * doorFactor;
+      }
+      return {
+        kwh,
+        salvage: parseFloat(root.querySelector('.opt-salvage').value) || 0,
+        disposal: parseFloat(root.querySelector('.opt-disposal').value) || 0
+      };
+    }
+
+    function readOptB(doorFactor) {
+      const root = document.querySelector('[data-opt="B"]');
+      return {
+        kwh: (parseFloat(root.querySelector('.opt-kwh').value) || 0) * doorFactor,
+        price: parseFloat(root.querySelector('.opt-price').value) || 0,
+        delivery: parseFloat(root.querySelector('.opt-delivery').value) || 0,
+        rebate: parseFloat(root.querySelector('.opt-rebate').value) || 0
+      };
+    }
+
+    function compute() {
+      const elecTariff = parseFloat($('elecTariff').value) || 0;
+      const rElec = (parseFloat($('elecIncrease').value) || 0) / 100;
+      const gst = (parseFloat($('gst').value) || 0) / 100;
+      const doorFactor = parseFloat($('doorFactor').value) || 1;
+      const lifespan = Math.max(1, Math.round(parseFloat($('lifespan').value) || 12));
+
+      const A = readOptA(doorFactor);
+      const B = readOptB(doorFactor);
+
+      const aKwh = A.kwh, bKwh = B.kwh;
+      const netUpfront = (B.price + B.delivery - B.rebate) - (-A.salvage - A.disposal);
+      // Equivalently: B.price + B.delivery - B.rebate + A.salvage + A.disposal — but the negative form
+      // makes the meaning explicit: U_A is "negative if you keep A and earn salvage net of disposal".
+
+      const tariffYr = N => elecTariff * Math.pow(1 + rElec, N - 1) * (1 + gst);
+      const rows = [];
+      let cum = 0, breakevenYear = null;
+      for (let y = 1; y <= lifespan; y++) {
+        const t = tariffYr(y);
+        const aCost = aKwh * t;
+        const bCost = bKwh * t;
+        const save = aCost - bCost;
+        cum += save;
+        const net = cum - netUpfront;
+        if (breakevenYear === null && net >= 0 && netUpfront > 0) breakevenYear = y;
+        rows.push({ y, aCost, bCost, save, cum, net });
+      }
+
+      $('aKwh').textContent = `${fmtN.format(aKwh)} kWh/yr`;
+      $('bKwh').textContent = `${fmtN.format(bKwh)} kWh/yr`;
+      $('netUpfront').textContent = fmtSGD.format(netUpfront);
+      $('year1Save').textContent = fmtSGD.format(rows[0]?.save ?? 0);
+
+      const msg = $('resultsMessage');
+      msg.classList.add('hidden');
+
+      if (aKwh <= 0 || bKwh <= 0) {
+        $('payback').textContent = '—';
+        $('paybackLabel').textContent = 'Enter both fridges to compute';
+      } else if (rows[0].save <= 0) {
+        $('payback').textContent = 'No payback';
+        $('paybackLabel').textContent = 'Option B uses as much energy or more than Option A — switching just adds upfront cost';
+        msg.classList.remove('hidden');
+        msg.textContent = 'Option B is not more efficient than Option A. Pick a higher-tick or smaller-volume model for B.';
+      } else if (netUpfront <= 0) {
+        $('payback').textContent = '0 yrs';
+        $('paybackLabel').textContent = 'Already paid back — Option B comes out cheaper upfront AND in running cost';
+      } else if (breakevenYear === null) {
+        $('payback').textContent = `> ${lifespan} yrs`;
+        $('paybackLabel').textContent = `Doesn't break even within the ${lifespan}-year horizon`;
+      } else {
+        const prev = rows[breakevenYear - 2]?.net ?? -netUpfront;
+        const cur = rows[breakevenYear - 1].net;
+        const frac = (cur === prev) ? 0 : (-prev) / (cur - prev);
+        const yrs = (breakevenYear - 1) + frac;
+        $('payback').textContent = `${yrs.toFixed(1)} yrs`;
+        $('paybackLabel').textContent = `Cumulative savings cover the upfront in year ${breakevenYear}`;
+      }
+
+      $('projectionBody').innerHTML = rows.map(r => {
+        const isBE = r.y === breakevenYear;
+        const cls = isBE ? 'bg-emerald-50 font-semibold text-emerald-900' : '';
+        const netClass = r.net >= 0 ? 'text-emerald-700' : 'text-slate-500';
+        return `<tr class="border-b border-slate-100 ${cls}">
+          <td class="py-1.5 pr-4">${r.y}</td>
+          <td class="py-1.5 pr-4">${fmtSGD.format(r.aCost)}</td>
+          <td class="py-1.5 pr-4">${fmtSGD.format(r.bCost)}</td>
+          <td class="py-1.5 pr-4">${fmtSGD.format(r.save)}</td>
+          <td class="py-1.5 pr-4">${fmtSGD.format(r.cum)}</td>
+          <td class="py-1.5 pr-0 ${isBE ? '' : netClass}">${fmtSGD.format(r.net)}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    // Wire up all input listeners
+    document.querySelectorAll('[data-opt] input, [data-opt] select').forEach(el => {
+      el.addEventListener('input', compute);
+    });
+    ['elecTariff','elecIncrease','gst','doorFactor','lifespan'].forEach(id => {
+      $(id).addEventListener('input', compute);
+    });
+
+    applyUrlParam();
+    compute();
+  </script>
+</body>
+</html>
