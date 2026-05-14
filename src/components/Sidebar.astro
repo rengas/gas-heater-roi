@@ -1,0 +1,96 @@
+---
+import { CALCULATORS } from '../data/calculators';
+import { getCollection } from 'astro:content';
+
+const path = Astro.url.pathname;
+const isBlog = path.startsWith('/blog');
+
+const posts = isBlog
+  ? (await getCollection('blog', ({ data }) => !data.draft)).sort(
+      (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+    )
+  : [];
+
+function isCalcActive(slug: string) {
+  return (
+    path === `/${slug}/` ||
+    path === `/${slug}` ||
+    path.startsWith(`/${slug}/`)
+  );
+}
+
+function isPostActive(slug: string) {
+  return path === `/blog/${slug}/` || path === `/blog/${slug}`;
+}
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-SG', { year: 'numeric', month: 'short', day: 'numeric' });
+---
+
+<aside
+  id="sidebar"
+  class="fixed md:sticky top-14 left-0 z-20 w-64 h-[calc(100vh-3.5rem)] bg-[#dceae3] border-r border-[#c8dad1] overflow-y-auto -translate-x-full md:translate-x-0 transition-transform duration-200 md:transition-none"
+>
+  <div class="p-4">
+    {isBlog ? (
+      <>
+        <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-1 mb-3">
+          All posts
+        </h2>
+        {posts.length === 0 ? (
+          <p class="text-sm text-slate-500 px-1">No posts yet.</p>
+        ) : (
+          <div class="space-y-0.5">
+            {posts.map((p) => {
+              const active = isPostActive(p.slug);
+              const state = active
+                ? 'bg-white text-teal-700 ring-1 ring-teal-300 shadow-sm'
+                : 'text-slate-700 hover:bg-white/60';
+              return (
+                <a
+                  href={`/blog/${p.slug}/`}
+                  class={`block rounded-lg px-3 py-2 text-sm transition ${state}`}
+                >
+                  <div class="font-medium leading-snug">{p.data.title}</div>
+                  <div class="text-xs text-slate-500 mt-0.5">{fmt(p.data.pubDate)}</div>
+                </a>
+              );
+            })}
+          </div>
+        )}
+      </>
+    ) : (
+      <>
+        <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-1 mb-3">
+          Calculators
+        </h2>
+        <div class="space-y-1">
+          {CALCULATORS.map((c) => {
+            const active = isCalcActive(c.slug);
+            const href = c.comingSoon ? '#' : `/${c.slug}/`;
+            const base = 'block rounded-lg px-3 py-2 text-sm transition';
+            const state = c.comingSoon
+              ? 'opacity-50 cursor-not-allowed'
+              : active
+                ? 'bg-teal-50 text-teal-700 ring-1 ring-teal-200'
+                : 'text-slate-700 hover:bg-slate-100';
+            return (
+              <a href={href} class={`${base} ${state}`}>
+                <div class="flex items-center gap-2">
+                  <span class="text-base">{c.icon}</span>
+                  <span class="font-medium">{c.title}</span>
+                  {c.comingSoon && (
+                    <span class="ml-auto text-[10px] uppercase tracking-wide text-slate-500">
+                      soon
+                    </span>
+                  )}
+                </div>
+                <p class="text-xs text-slate-500 mt-0.5 ml-7">{c.description}</p>
+              </a>
+            );
+          })}
+        </div>
+      </>
+    )}
+  </div>
+</aside>

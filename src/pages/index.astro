@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { CALCULATORS } from '../data/calculators';
+---
+
+<BaseLayout title="ROI Tools — Singapore Home Calculators">
+  <header class="mb-10">
+    <h1 class="text-3xl sm:text-4xl font-bold text-slate-900">ROI Tools</h1>
+    <p class="text-sm sm:text-base text-slate-600 mt-2 max-w-2xl">
+      Quick payback-period calculators for everyday Singapore home decisions &mdash; water heaters, aircon, refrigerators, and more. Pick a calculator to get started.
+    </p>
+  </header>
+
+  <section class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    {CALCULATORS.map((c) => (
+      <a
+        href={c.comingSoon ? '#' : `/${c.slug}/`}
+        class={`group bg-white rounded-2xl ring-1 ring-slate-200 hover:ring-teal-300 hover:shadow-md transition p-6 ${
+          c.comingSoon ? 'opacity-60 pointer-events-none' : ''
+        }`}
+      >
+        <div class="flex items-start gap-4">
+          <span class="text-3xl">{c.icon}</span>
+          <div class="min-w-0">
+            <h2 class="text-lg font-semibold text-slate-900 group-hover:text-teal-700">{c.title}</h2>
+            <p class="text-sm text-slate-600 mt-1">{c.description}</p>
+            <p class="text-xs text-teal-600 font-medium mt-3">
+              {c.comingSoon ? 'Coming soon' : 'Open calculator →'}
+            </p>
+          </div>
+        </div>
+      </a>
+    ))}
+
+    <a
+      href="/blog/"
+      class="group bg-white rounded-2xl ring-1 ring-slate-200 hover:ring-teal-300 hover:shadow-md transition p-6"
+    >
+      <div class="flex items-start gap-4">
+        <span class="text-3xl">📝</span>
+        <div class="min-w-0">
+          <h2 class="text-lg font-semibold text-slate-900 group-hover:text-teal-700">Blog</h2>
+          <p class="text-sm text-slate-600 mt-1">
+            Notes, deep dives, and SG-specific guides on saving energy at home.
+          </p>
+          <p class="text-xs text-teal-600 font-medium mt-3">Read posts →</p>
+        </div>
+      </div>
+    </a>
+  </section>
+
+  <footer class="text-xs text-slate-500 mt-10 leading-relaxed">
+    <p>
+      Static site, no tracking, no accounts. All calculations run in your browser. Tariff data sourced from
+      <a class="text-teal-600 hover:underline" href="https://www.spgroup.com.sg/our-services/utilities/tariff-information" target="_blank" rel="noopener">SP Group</a>,
+      <a class="text-teal-600 hover:underline" href="https://cityenergy.com.sg/newsroom/" target="_blank" rel="noopener">City Energy</a>, and
+      <a class="text-teal-600 hover:underline" href="https://www.ema.gov.sg/resources/statistics" target="_blank" rel="noopener">EMA</a>.
+    </p>
+  </footer>
+</BaseLayout>
